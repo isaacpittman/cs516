@@ -24,6 +24,8 @@ sigset_t                maskval;
 int                     bx[10];
 void                    fun1(int), fun2(int), fun3(int), clock_isr(int);
 int                     t_init(void (*)(), int);
+ucontext_t              main_env;
+
 int  main(int argc, char *argv[])
 {
         int     i,j,k;
@@ -39,7 +41,7 @@ int  main(int argc, char *argv[])
         if(sigaction(SIGVTALRM, &sigdat, (struct sigaction *)0) == -1){
                 perror("signal set error");
                 exit(2);
-        }
+        }      
         if((i = t_init(fun1, 1)) == -1){
                 printf("thread failed to initialize\n");
                 exit(7);
@@ -48,7 +50,7 @@ int  main(int argc, char *argv[])
                 printf("thread failed to initialize\n");
                 exit(7);
         }
- if((k = t_init(fun3, 3)) == -1){
+        if((k = t_init(fun3, 3)) == -1){
                 printf("thread failed to initialize\n");
                 exit(7);
         }
@@ -63,11 +65,15 @@ int  main(int argc, char *argv[])
                 perror("setitimer");
                 exit(3);
         }
-        if(setcontext(&(t_state[current].run_env)) == -1){
-                perror("setcontext");
+        if(swapcontext(&main_env, &(t_state[current].run_env)) == -1){
+                perror("swapcontext");
                 exit(5);
         }
-        while(1);
+        /* When threads exit, this loop will resume */
+        while(1) {
+            t_state[current].state = FREE;
+            clock_isr(-current);
+        }
         return 0;
 }       /****** End main() ******/
 int     t_init (void (*fun_addr)(), int fun_arg)
@@ -81,15 +87,18 @@ int     t_init (void (*fun_addr)(), int fun_arg)
                 perror("getcontext in t_init");
                 exit(5);
         }
+        /* Threads are initialized from main, so we need to return there so
+         * they can be marked free and a new thread can be started. */
+        t_state[i].run_env.uc_link      = &(main_env);
         t_state[i].state                = INIT;
         t_state[i].function             = fun_addr;
-        t_state[i].mystk.ss_sp         = (void *)(malloc(STACKSIZE));
+        t_state[i].mystk.ss_sp          = (void *)(malloc(STACKSIZE));
         if(t_state[i].mystk.ss_sp == NULL){
                printf("thread failed to get stack space\n");
                exit(8);
         }
-        t_state[i].mystk.ss_size       = STACKSIZE;
-        t_state[i].mystk.ss_flags      = 0;
+        t_state[i].mystk.ss_size        = STACKSIZE;
+        t_state[i].mystk.ss_flags       = 0;
         t_state[i].run_env.uc_stack     = t_state[i].mystk;
         makecontext(&t_state[i].run_env, fun_addr, 1,fun_arg);
         return(i);
@@ -108,7 +117,7 @@ void    clock_isr(int sig)
             old     = current;
             current = j;
             sigprocmask (SIG_SETMASK, &maskval, NULL);
-             swapcontext (&(t_state[old].run_env), &(t_state[current].run_env));
+            swapcontext (&(t_state[old].run_env), &(t_state[current].run_env));
             return;
            }
           }
@@ -135,8 +144,6 @@ void    fun1 (int global_index)
            write (1,"1",1);
            for (b=0, bx[global_index]=0; b<25000000; ++b,++bx[global_index]);
         }
-        t_state[current].state = FREE;
-        clock_isr(-current);
         return;
 }
 void    fun2 (int global_index)
@@ -147,8 +154,6 @@ void    fun2 (int global_index)
            write (1,"2",1);
            for (b=0, bx[global_index]=0; b<18000000; ++b,++bx[global_index]);
         }
-        t_state[current].state = FREE;
-        clock_isr(-current);
         return;
 }
 void    fun3 (int global_index)
@@ -159,7 +164,5 @@ void    fun3 (int global_index)
            write (1,"3",1);
            for (b=0, bx[global_index]=0; b<40000000; ++b,++bx[global_index]);
         }
-        t_state[current].state = FREE;
-        clock_isr(-current);
         return;
 }
