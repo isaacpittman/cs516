@@ -22,9 +22,8 @@ char                    interrupt_string1[] = "\tcall in from context    \n";
 int                     current = 0;
 sigset_t                maskval;
 int                     bx[10];
-void                    fun1(int), fun2(int), fun3(int), clock_isr(int);
+void                    fun1(int), fun2(int), fun3(int), clock_isr(int), scheduler_thread();
 int                     t_init(void (*)(), int);
-ucontext_t              main_env;
 
 int  main(int argc, char *argv[])
 {
@@ -41,7 +40,7 @@ int  main(int argc, char *argv[])
         if(sigaction(SIGVTALRM, &sigdat, (struct sigaction *)0) == -1){
                 perror("signal set error");
                 exit(2);
-        }      
+        }
         if((i = t_init(fun1, 1)) == -1){
                 printf("thread failed to initialize\n");
                 exit(7);
@@ -65,15 +64,11 @@ int  main(int argc, char *argv[])
                 perror("setitimer");
                 exit(3);
         }
-        if(swapcontext(&main_env, &(t_state[current].run_env)) == -1){
-                perror("swapcontext");
+        if(setcontext(&(t_state[current].run_env)) == -1){
+                perror("setcontext");
                 exit(5);
         }
-        /* When threads exit, this loop will resume */
-        while(1) {
-            t_state[current].state = FREE;
-            clock_isr(-current);
-        }
+
         return 0;
 }       /****** End main() ******/
 int     t_init (void (*fun_addr)(), int fun_arg)
@@ -84,12 +79,9 @@ int     t_init (void (*fun_addr)(), int fun_arg)
         }
         if (i == N) return(-1);
         if(getcontext(&t_state[i].run_env) == -1){
-                perror("getcontext in t_init");
+                perror("getcontext for run_env in t_init");
                 exit(5);
         }
-        /* Threads are initialized from main, so we need to return there so
-         * they can be marked free and a new thread can be started. */
-        t_state[i].run_env.uc_link      = &(main_env);
         t_state[i].state                = INIT;
         t_state[i].function             = fun_addr;
         t_state[i].mystk.ss_sp          = (void *)(malloc(STACKSIZE));
@@ -100,16 +92,32 @@ int     t_init (void (*fun_addr)(), int fun_arg)
         t_state[i].mystk.ss_size        = STACKSIZE;
         t_state[i].mystk.ss_flags       = 0;
         t_state[i].run_env.uc_stack     = t_state[i].mystk;
+        /* When threads exit, resume the rtn_env context */
+        if(getcontext(&t_state[i].rtn_env) == -1){
+                perror("getcontext for rtn_env in t_init");
+                exit(5);
+        }
+        t_state[i].rtn_env.uc_stack     = t_state[i].mystk; // The thread exited, so we can reuse its stack for the return context
+        makecontext(&t_state[i].rtn_env, scheduler_thread, 0);
+        t_state[i].run_env.uc_link      = &t_state[i].rtn_env;
         makecontext(&t_state[i].run_env, fun_addr, 1,fun_arg);
         return(i);
 }       /****** End t_init() ******/
+
+void    scheduler_thread()
+{
+    t_state[current].state = FREE;
+    clock_isr(-current);
+
+}
+
 void    clock_isr(int sig)
 {
         int                     i,j,k, old;
         interrupt_string1[23]   = (char)(current + 48);
         interrupt_string2[23]   = (char)(current + 48);
         if(sig < 0)write(1, interrupt_string1, 27);
-        else       write(1, interrupt_string2, 27);
+        else write(1, interrupt_string2, 27);
         if (t_state[current].state == INIT) {
           printf ("\t\t\t\t\tthread %d has b = %d\n", current, bx[current]);
           for(i=1; i<(N+1); i++){
@@ -154,7 +162,7 @@ void    fun2 (int global_index)
            write (1,"2",1);
            for (b=0, bx[global_index]=0; b<18000000; ++b,++bx[global_index]);
         }
-        return;
+       return;
 }
 void    fun3 (int global_index)
 {
