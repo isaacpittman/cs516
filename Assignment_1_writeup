@@ -1,0 +1,18 @@
+Isaac Pittman
+isaac_pittman@student.uml.edu
+COMP 5160 Operating Systems II
+Spring 2016
+
+Assignment 1
+
+	I believe I accomplished 100% of the requirements for this assignment. To ensure the threads are marked free and the clock_isr() function is called, I moved the code that does this from the end of the fun1-3 functions into its own function, scheduler_thread(). Then, I modified t_init so that when it creates the thread, it also initializes t_state[i]'s rtn_env to point to scheduler_thread(). The rtn_env context reuses the stack from t_state[i]'s run_env, since rtn_env will only be used once run_env has returned and is therefore no longer using its stack. Finally, I used the uc_link property of run_env to ensure that rtn_env is resume when run_env returns.
+
+	Initially, I experimented with other configurations, such as 
+	(1) A global context variable containing an infinite loop that marks the current thread free then calls clock_isr(), which was linked to run_env using uc_link during t_init. 
+	(2) The same infinite loop, but at the end of main, instead of in an independant context pointing to a function, then using swapcontext to enter fun1, storing main's context in the global variable. 
+	(3) Storing a global context in t_state[0], which contained the same infinite loop, linked to t_state[i].run_env during t_init.
+	(4) Chaning rtn_ctx from a value to a pointer and pointing it to the global context described in (1).
+
+	Although I was able to successfully implement some of these alternatives, none of the alternatives met the requirement of the project to use t_state[i].rtn_ctx as it was given in the example code.
+
+	A possible improvement to the project would be to initialize t_state[i].rtn_context with its own malloc'd stack, instead of using the run_env stack. Although reusing the stack has not caused any errors during testing, creating a new stack would ensure that there is no conflict. However, it would double the required memory of the program.
