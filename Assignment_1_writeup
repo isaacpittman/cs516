@@ -5,6 +5,16 @@ Spring 2016
 
 Assignment 1
 
+USAGE
+	In the directory containing the source files, run the command
+		cmake .
+	(note the dot after cmake) which will create the Makefile and supporting files. Then run
+		make
+	to build the project. Finally, call the executable using
+		./contextswitcher
+
+WRITEUP
+
 	I believe I accomplished 100% of the requirements for this assignment. To ensure the threads are marked free and the clock_isr() function is called, I moved the code that does this from the end of the fun1-3 functions into its own function, scheduler_thread(). Then, I modified t_init so that when it creates the thread, it also initializes t_state[i]'s rtn_env to point to scheduler_thread(). The rtn_env context reuses the stack from t_state[i]'s run_env, since rtn_env will only be used once run_env has returned and is therefore no longer using its stack. Finally, I used the uc_link property of run_env to ensure that rtn_env is resume when run_env returns.
 
 	Initially, I experimented with other configurations, such as 
