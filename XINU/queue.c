@@ -1,8 +1,8 @@
 /* queue.c - dequeue, enqueue */
 
-#include <conf.h>
-#include <kernel.h>
-#include <q.h>
+#include "conf.h"
+#include "kernel.h"
+#include "q.h"
 
 /*------------------------------------------------------------------------
  * enqueue  --	insert an item at the tail of a list

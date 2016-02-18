@@ -1,10 +1,10 @@
 /* wakeup.c - wakeup */
 
-#include <conf.h>
-#include <kernel.h>
-#include <proc.h>
-#include <q.h>
-#include <sleep.h>
+#include "conf.h"
+#include "kernel.h"
+#include "proc.h"
+#include "q.h"
+#include "sleep.h"
 
 /*------------------------------------------------------------------------
  * wakeup  --  called by clock interrupt dispatcher to awaken processes

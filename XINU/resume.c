@@ -1,8 +1,8 @@
 /* resume.c - resume */
 
-#include <conf.h>
-#include <kernel.h>
-#include <proc.h>
+#include "conf.h"
+#include "kernel.h"
+#include "proc.h"
 
 /*------------------------------------------------------------------------
  * resume  --  unsuspend a process, making it ready; return the priority

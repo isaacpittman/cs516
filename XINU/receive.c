@@ -1,8 +1,8 @@
 /* receive.c - receive */
 
-#include <conf.h>
-#include <kernel.h>
-#include <proc.h>
+#include "conf.h"
+#include "kernel.h"
+#include "proc.h"
 
 /*------------------------------------------------------------------------
  *  receive  -  wait for a message and return it

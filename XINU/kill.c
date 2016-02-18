@@ -1,11 +1,11 @@
 /* kill.c - kill */
 
-#include <conf.h>
-#include <kernel.h>
-#include <proc.h>
-#include <sem.h>
-#include <mem.h>
-#include <io.h>
+#include "conf.h"
+#include "kernel.h"
+#include "proc.h"
+#include "sem.h"
+#include "mem.h"
+#include "io.h"
 
 /*------------------------------------------------------------------------
  * kill  --  kill a process and remove it from the system

@@ -1,8 +1,8 @@
 /* send.c - send */
 
-#include <conf.h>
-#include <kernel.h>
-#include <proc.h>
+#include "conf.h"
+#include "kernel.h"
+#include "proc.h"
 
 /*------------------------------------------------------------------------
  *  send  --  send a message to another process

@@ -1,10 +1,10 @@
 /* ssclock.c - stopclk, strtclk */
 
-#include <conf.h>
-#include <kernel.h>
-#include <proc.h>
-#include <q.h>
-#include <sleep.h>
+#include "conf.h"
+#include "kernel.h"
+#include "proc.h"
+#include "q.h"
+#include "sleep.h"
 
 /*------------------------------------------------------------------------
  *  stopclk  --  put the clock in defer mode

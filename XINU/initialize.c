@@ -1,14 +1,14 @@
 /* initialize.c - nulluser, sysinit */
 
-#include <conf.h>
-#include <kernel.h>
-#include <proc.h>
-#include <sem.h>
-#include <sleep.h>
-#include <mem.h>
+#include "conf.h"
+#include "kernel.h"
+#include "proc.h"
+#include "sem.h"
+#include "sleep.h"
+#include "mem.h"
 #include <tty.h>
-#include <q.h>
-#include <io.h>
+#include "q.h"
+#include "io.h"
 #include <disk.h>
 #include <network.h>
 

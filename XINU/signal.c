@@ -1,10 +1,10 @@
 /* signal.c - signal */
 
-#include <conf.h>
-#include <kernel.h>
-#include <proc.h>
-#include <q.h>
-#include <sem.h>
+#include "conf.h"
+#include "kernel.h"
+#include "proc.h"
+#include "q.h"
+#include "sem.h"
 
 /*------------------------------------------------------------------------
  * signal  --  signal a semaphore, releasing one waiting process

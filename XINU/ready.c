@@ -1,9 +1,9 @@
 /* ready.c - ready */
 
-#include <conf.h>
-#include <kernel.h>
-#include <proc.h>
-#include <q.h>
+#include "conf.h"
+#include "kernel.h"
+#include "proc.h"
+#include "q.h"
 
 /*------------------------------------------------------------------------
  * ready  --  make a process eligible for CPU service

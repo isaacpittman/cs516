@@ -1,8 +1,8 @@
 /* insertd.c - insertd */
 
-#include <conf.h>
-#include <kernel.h>
-#include <q.h>
+#include "conf.h"
+#include "kernel.h"
+#include "q.h"
 
 /*------------------------------------------------------------------------
  *  insertd  --  insert process pid in delta list "head", given its key

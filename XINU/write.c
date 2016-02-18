@@ -1,8 +1,8 @@
 /* write.c - write */
 
-#include <conf.h>
-#include <kernel.h>
-#include <io.h>
+#include "conf.h"
+#include "kernel.h"
+#include "io.h"
 
 /*------------------------------------------------------------------------
  *  write  -  write 1 or more bytes to a device

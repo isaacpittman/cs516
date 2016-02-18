@@ -1,9 +1,9 @@
 /* resched.c  -  resched */
 
-#include <conf.h>
-#include <kernel.h>
-#include <proc.h>
-#include <q.h>
+#include "conf.h"
+#include "kernel.h"
+#include "proc.h"
+#include "q.h"
 
 /*------------------------------------------------------------------------
  * resched  --  reschedule processor to highest priority ready process

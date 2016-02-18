@@ -1,8 +1,8 @@
 /* getmem.c - getmem */
 
-#include <conf.h>
-#include <kernel.h>
-#include <mem.h>
+#include "conf.h"
+#include "kernel.h"
+#include "mem.h"
 
 /*------------------------------------------------------------------------
  * getmem  --  allocate heap storage, returning lowest integer address

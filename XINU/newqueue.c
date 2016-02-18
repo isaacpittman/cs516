@@ -1,8 +1,8 @@
 /* newqueue.c  -  newqueue */
 
-#include <conf.h>
-#include <kernel.h>
-#include <q.h>
+#include "conf.h"
+#include "kernel.h"
+#include "q.h"
 
 /*------------------------------------------------------------------------
  * newqueue  --  initialize a new list in the q structure

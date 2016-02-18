@@ -1,8 +1,8 @@
 /* recvclr.c - recvclr */
 
-#include <conf.h>
-#include <kernel.h>
-#include <proc.h>
+#include "conf.h"
+#include "kernel.h"
+#include "proc.h"
 
 /*------------------------------------------------------------------------
  *  recvclr  --  clear messages, returning waiting message (if any)

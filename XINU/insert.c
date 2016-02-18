@@ -1,8 +1,8 @@
 /* insert.c  -  insert */
 
-#include <conf.h>
-#include <kernel.h>
-#include <q.h>
+#include "conf.h"
+#include "kernel.h"
+#include "q.h"
 
 /*------------------------------------------------------------------------
  * insert.c  --  insert an process into a q list in key order

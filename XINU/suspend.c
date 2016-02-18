@@ -1,8 +1,8 @@
 /* suspend.c - suspend */
 
-#include <conf.h>
-#include <kernel.h>
-#include <proc.h>
+#include "conf.h"
+#include "kernel.h"
+#include "proc.h"
 
 /*------------------------------------------------------------------------
  *  suspend  --  suspend a process, placing it in hibernation
