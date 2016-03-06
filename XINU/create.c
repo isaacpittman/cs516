@@ -70,6 +70,8 @@ SYSCALL create( int *procaddr,	/* procedure address            */
     pptr->posix_ctxt.uc_stack.ss_sp    = pptr->plimit; // Plimit points to shallow end of stack as required by ss_sp
     pptr->posix_ctxt.uc_link           = &end_game_ctxt; // Since we're using u_context, link to end_game_ctxt on return instead of calling INITRET
 
+    /* No easy way to pass the args array to makecontext, since it uses variadic arguments. Instead, just hardcode 10 args variables and pass them as needed.
+        Will break if passed more than 10 args */
     // Point to last argument in args array
     args += nargs-1;
 
