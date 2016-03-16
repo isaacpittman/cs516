@@ -8,8 +8,7 @@
  * getstk  --  allocate stack memory, returning address of topmost int
  *------------------------------------------------------------------------
  */
-SYSCALL	*getstk(nbytes)
-	unsigned  int nbytes;
+SYSCALL	*getstk(unsigned  int nbytes)
 {
 	char	ps;
 	struct	mblock	*p, *q;	  /* q follows p along memlis  */
