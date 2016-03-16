@@ -16,6 +16,7 @@ extern	void	main_fun();			/* address of user's main prog	*/
 extern  void    end_game();         /* end context, kill -> resched */
 extern  void    proc(int);          /* process created by main_fun  */
 extern  void    procA(int);         /* process created by main_fun */
+extern  void    procB(int, int);         /* process created by main_fun */
 extern  void    procC(int, int);    /* process created by main_fun */
 
 /* Declarations of major kernel variables */
@@ -144,12 +145,12 @@ LOCAL	sysinit()
 	memlist.mnext = mptr =		/* initialize free memory list */
       (struct mblock *) malloc(FREE_SIZE);
     if(mptr == NULL) {
-        perror("mallo failed ");
+        perror("malloc failed ");
         exit(3);
     }
 	mptr->mnext = (struct mblock *)NULL;
 //	mptr->mlen = truncew((unsigned)maxaddr-NULLSTK-(unsigned)&end);
-    mptr->mlen = truckew((FREE_SIZE)-(NULLSTK)); /* TODO: Comment */
+    mptr->mlen = truncew((FREE_SIZE)-(NULLSTK)); /* TODO: Comment */
 
 	for (i=0 ; i<NPROC ; i++)	/* initialize process table */
 		proctab[i].pstate = PRFREE;
@@ -177,7 +178,7 @@ LOCAL	sysinit()
     /* TODO: Comment */
     pptr->posix_ctxt.uc_stack.ss_sp     = (void *)pptr->plimit;
     pptr->posix_ctxt.uc_stack.ss_size   =   NULLSTK;
-    pptr->posix_ctxt.ss_flags           = 0;
+    pptr->posix_ctxt.uc_stack.ss_flags  = 0;
     pptr->posix_ctxt.uc_link            = &end_game_ctxt;
 
     makecontext(&(pptr->posix_ctxt), idle_thread, 0);
