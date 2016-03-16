@@ -38,7 +38,7 @@ int	resched()
 #ifdef	RTCLOCK
 	preempt = QUANTUM;		/* reset preemption counter	*/
 #endif
-	ctxsw(optr->pregs,nptr->pregs);
+    ctxsw(&optr->posix_ctxt,&nptr->posix_ctxt);
 
 	/* The OLD process returns here when resumed. */
 	return(OK);
