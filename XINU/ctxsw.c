@@ -1,3 +1,13 @@
+#include<ucontext.h>
+
+void ctxsw(ucontext_t* uctx_old, ucontext_t* uctx_new)
+{
+    if (swapcontext(uctx_old, uctx_new) == -1){
+           perror("swap context error in ctxsw");
+           exit(1);
+    }
+}
+
 /* ctxsw.s - ctxsw */
 
 /*------------------------------------------------------------------------
@@ -41,3 +51,5 @@ _ctxsw:				/ entry point to context switch
 	mov	14.(r0),-(sp)	/ Push new process PC on new process stack
 	mov	(r0),r0		/ Finally, load R0 from new area
 	rtt			/ Load PC, PS, and reset SP all at once
+
+    */
