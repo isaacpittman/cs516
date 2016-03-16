@@ -53,9 +53,11 @@
 #define	INITPRIO	20		/* initial process priority	*/
 #define	INITNAME	"m_fun"		/* initial process name		*/
 #define	INITRET		userret		/* processes return address	*/
+#define INITARGSC   1       /* number of arguments passed to init thread */
 // #define	INITPS		0		/* initial process PS		*/
 // #define	INITREG		0		/* initial register contents	*/
 #define	QUANTUM		10		/* clock ticks until preemption	*/
+#define TICK_LENGTH_USEC 16667   /* clock tick length in microseconds */
 #define MAGIC		0xDEADBEEF	/* magic for nullproc stack base*/
 
 /* Miscellaneous utility inline functions */
