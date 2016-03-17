@@ -12,7 +12,7 @@ LOCAL newpid();
  *  create  -  create a process to start running a procedure
  *------------------------------------------------------------------------
  */
-SYSCALL create( int *procaddr,	/* procedure address            */ 
+SYSCALL create(void (*procaddr)(),	/* procedure address            */
         int ssize,              /* stack size in words          */
         int priority,           /* process priority > 0         */
         char *name,             /* name (for debugging)         */
@@ -29,7 +29,8 @@ SYSCALL create( int *procaddr,	/* procedure address            */
 	int	INITRET();
 	disable(ps);
 	ssize = roundew(ssize);
-    if ( ssize < MINSTK || isodd(procaddr) || priority < 1 || (pid=newpid()) == SYSERR  ||
+    // Removed check for isodd, since we're using posix contexts, doesn't have to align to word boundary
+    if ( ssize < MINSTK || priority < 1 || (pid=newpid()) == SYSERR  ||
         (((int)(saddr=getstk(ssize))) == SYSERR ) ) {
 		restore(ps);
 		return(SYSERR);
@@ -46,6 +47,7 @@ SYSCALL create( int *procaddr,	/* procedure address            */
 	pptr->phasmsg = FALSE;
 	pptr->plimit = (int)(saddr - ssize + 1);
 	pptr->pargs = nargs;
+    pptr->paddr = procaddr;
 
     //Don't need to save registers, since we're using a POSIX context
     //for (i=0 ; i<PNREGS ; i++)
