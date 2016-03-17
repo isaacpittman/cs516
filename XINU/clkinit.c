@@ -36,6 +36,8 @@ clkinit()
     //*vector = DISABLE;
     //setclkr();
 
+    clkruns = TRUE;             /* Set clkruns TRUE, since clock is always defined on modern systems */
+
     preempt = QUANTUM;          /* initial time quantum		*/
     count6 = 6;                 /* 60ths of a sec. counter	*/
     slnempty = FALSE;           /* initially, no process asleep	*/
