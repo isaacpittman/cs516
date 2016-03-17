@@ -2,6 +2,7 @@
 
 *create.c: 
 	reordered calls to newpid() and getstk() so that stack is not leaked if subsequent call to getpid() fails
+	Don't check if procaddr isodd, because we're using posix contexts that don't need to align to word boundary
 	modified to use makecontext() and set posix_ctxt in pentry
 	had to limit to 10 arguments, because makecontext() is variadic, and cannot accept the array that's passed to create()
 		just hardcoded 10 variables: arg1...arg10
