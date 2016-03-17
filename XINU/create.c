@@ -1,5 +1,5 @@
 /* create.c - create, newpid */
-
+#include<stdarg.h>
 #include "conf.h"
 #include "kernel.h"
 #include "proc.h"
@@ -17,7 +17,7 @@ SYSCALL create(void (*procaddr)(),	/* procedure address            */
         int priority,           /* process priority > 0         */
         char *name,             /* name (for debugging)         */
         int nargs,              /* number of args that follow   */
-        int args)               /* arguments (treated like an   */
+        ...)               /* arguments (treated like an   */
                                 /* array in the code)           */
 {
     int	pid;                    /* stores new process id	*/
@@ -27,11 +27,17 @@ SYSCALL create(void (*procaddr)(),	/* procedure address            */
     int	*saddr;                 /* stack address		*/
     char	ps;                 /* saved processor status	*/
 	int	INITRET();
-	disable(ps);
+    int args[MAXARGS];          /* variadic arguments are copied here */
+    va_list ap;                 /* used to iterate through variadic args */
+
+    disable(ps);
 	ssize = roundew(ssize);
     // Removed check for isodd, since we're using posix contexts, doesn't have to align to word boundary
-    if ( ssize < MINSTK || priority < 1 || (pid=newpid()) == SYSERR  ||
-        (((int)(saddr=getstk(ssize))) == SYSERR ) ) {
+    if ( ssize < MINSTK ||
+         priority < 1 ||
+         (pid=newpid()) == SYSERR  ||
+        (((int)(saddr=getstk(ssize))) == SYSERR ) ||
+         nargs > MAXARGS) {
 		restore(ps);
 		return(SYSERR);
 	}
@@ -74,32 +80,35 @@ SYSCALL create(void (*procaddr)(),	/* procedure address            */
 
     /* No easy way to pass the args array to makecontext, since it uses variadic arguments. Instead, just hardcode 10 args variables and pass them as needed.
         Will break if passed more than 10 args */
-    // Point to last argument in args array
-    args += nargs-1;
+    va_start(ap, nargs);
+    for (i=0; i<nargs; ++i){
+        args[i]=va_arg(ap, int);
+    }
+    va_end(ap);
 
     int arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10;
     switch (nargs)
     {
     case 10:
-        arg10=args--;
+        arg10=args[9];
     case 9:
-        arg9=args--;
+        arg9=args[8];
     case 8:
-        arg8=args--;
+        arg8=args[7];
     case 7:
-        arg7=args--;
+        arg7=args[6];
     case 6:
-        arg6=args--;
+        arg6=args[5];
     case 5:
-        arg5=args--;
+        arg5=args[4];
     case 4:
-        arg4=args--;
+        arg4=args[3];
     case 3:
-        arg3=args--;
+        arg3=args[2];
     case 2:
-        arg2=args--;
+        arg2=args[1];
     case 1:
-        arg1=args--;
+        arg1=args[0];
         break;
     default:
         perror("unknown number of args in create");

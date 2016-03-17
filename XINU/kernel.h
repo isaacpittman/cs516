@@ -59,6 +59,7 @@
 #define	QUANTUM		10		/* clock ticks until preemption	*/
 #define TICK_LENGTH_USEC 16667   /* clock tick length in microseconds */
 #define MAGIC		0xDEADBEEF	/* magic for nullproc stack base*/
+#define MAXARGS     10      /* max number of arguments that can be passed to create */
 
 /* Miscellaneous utility inline functions */
 
