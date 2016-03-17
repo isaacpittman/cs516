@@ -1,12 +1,18 @@
-* used alarm and setitimer to simulate clock interrupt in clkinit
+*clkinit.c
+	used alarm and setitimer to simulate clock interrupt in clkinit
+	set clkruns to true, since clock is always defined on modern systems
 
 *create.c: 
 	reordered calls to newpid() and getstk() so that stack is not leaked if subsequent call to getpid() fails
 	Don't check if procaddr isodd, because we're using posix contexts that don't need to align to word boundary
 	modified to use makecontext() and set posix_ctxt in pentry
 	had to limit to 10 arguments, because makecontext() is variadic, and cannot accept the array that's passed to create()
-		just hardcoded 10 variables: arg1...arg10
+		just hardcoded 10 variables: arg1...arg10	
+		calls to create pass array of ints as parameter
 	instead of pushing INITRET (userret, which calls kill()) onto the stack for return, just link to end_game_ctxt, created in initialize.c, which does the same thing
+
+*kill.c:
+	case PRSLEEP: add my wait time to the next process in the delta queue's wait time. Adjust PRWAIT to not fall through.
 	
 
 
