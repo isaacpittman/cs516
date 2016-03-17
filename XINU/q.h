@@ -8,9 +8,9 @@
 
 struct	qent	{		/* one for each process plus two for	*/
 				/* each list				*/
-	short	qkey;		/* key on which the queue is ordered	*/
-	short	qnext;		/* pointer to next process or tail	*/
-	short	qprev;		/* pointer to previous process or head	*/
+    int	qkey;		/* key on which the queue is ordered	*/
+    int	qnext;		/* pointer to next process or tail	*/
+    int	qprev;		/* pointer to previous process or head	*/
 	};
 
 extern	struct	qent q[];
