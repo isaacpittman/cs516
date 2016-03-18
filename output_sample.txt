@@ -1,0 +1,39 @@
+[ipittman@mercury Assignment2]$ ./xinu.exe 
+
+Starting clock interrupt timer
+#
+INIT: MAIN FUNCTION IS ALIVE
+
+INIT: main function has created procs A B and C
+
+INIT: main function about to suspend self
+
+A: process A is alive
+A: process A is about to wait on a sem
+B: process B is alive
+B: process B is about to sleep for 2 seconds
+C: process C is alive
+C: process C is about to sleep for 30 seconds
+###############
+B: process B is awake from sleep, will signal sem
+
+A: process A is awake from sem, will wait for msg
+
+B: process B is again to sleep for 2 seconds##############
+B: process B is awake from sleep, will send msg to A
+
+A: process A has received a msg, goodbye
+<>
+B: process B is about to sleep for 2 seconds################
+B: process B is awake from sleep, goodbye
+<>################################################################################################################################################################################
+C: process C is awake from sleep, will resume INIT
+
+INIT: main function has been resumed
+
+Some proc is still alive. Sleeping main for 5...
+
+C: process C is finished, goodbye
+<>####################################
+INIT: proc table empty, goodbye
+
