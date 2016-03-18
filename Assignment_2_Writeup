@@ -19,4 +19,6 @@
 *.*
 	replace char ps with sigset_t ps so disable and restore will work
 	remove "register" hint, which causes SIGSEGV
-
+*chprio.c
+	If changing priority of process in ready queue, have to dequeue then ready again to make sure it's in priority order.
+	If changing priority of current process, have to call resched in case another process has higher priority.
