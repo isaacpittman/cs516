@@ -1,24 +1,39 @@
-*clkinit.c
-	used alarm and setitimer to simulate clock interrupt in clkinit
-	set clkruns to true, since clock is always defined on modern systems
+Isaac Pittman
+isaac_pittman@student.uml.edu
+COMP 5160 Operating Systems II
+Spring 2016
 
-*create.c: 
-	reordered calls to newpid() and getstk() so that stack is not leaked if subsequent call to getpid() fails
-	Don't check if procaddr isodd, because we're using posix contexts that don't need to align to word boundary
-	modified to use makecontext() and set posix_ctxt in pentry
-	had to limit to 10 arguments, because makecontext() is variadic, and cannot accept the array that's passed to create()
-		just hardcoded 10 variables: arg1...arg10	
-		calls to create pass array of ints as parameter
-	instead of pushing INITRET (userret, which calls kill()) onto the stack for return, just link to end_game_ctxt, created in initialize.c, which does the same thing
+Assignment 2
 
-*kill.c:
-	case PRSLEEP: add my wait time to the next process in the delta queue's wait time. Adjust PRWAIT to not fall through.
+I believe I accomplished 100% of the requirements for this assignment. To meet the requirements, the following modifications were made to the original XINU source.
 
-*sleep10.c
-	make sure to disable and restore interrupts before/after calling resched()
-*.*
-	replace char ps with sigset_t ps so disable and restore will work
-	remove "register" hint, which causes SIGSEGV
-*chprio.c
-	If changing priority of process in ready queue, have to dequeue then ready again to make sure it's in priority order.
-	If changing priority of current process, have to call resched in case another process has higher priority.
+--initialize.c
+	Heavily modified to use posix contexts. The idle thread is initialized using makecontext and started using setcontext() from main(). The idle thread then resumes the main_fun() thread, which was created in main() using XINU system call create(). The main_fun() thread then creates the semaphore and procs, outputs the messages as required by the assginment, waits for all procs to finishes, and terminates.
+
+--clkinit.c
+	I used a SIGVTALRM alarm and setitimer to simulate clock interrupts by calling the clkint function every 1/60th second (16667 microseconds).
+	The clkruns variable is always set to TRUE, since our systems always support a real time clock.
+
+--clkint.c
+	Recoded as nested if statements in a clkint() function in the clkinit.c file. The function is called by SIGVTALRM signals as described above.
+
+--create.c
+	Reordered calls to newpid() and getstk() so that stack is not leaked if subsequent call to getpid() fails.
+	Removed check if procaddr isodd, because we're using posix contexts that don't need to align to word boundary.
+	Modified to use makecontext() and set posix_ctxt in pentry rather than using pregs and saving registers.
+	Had to limit to 10 arguments, because makecontext() is variadic, and cannot accept the variadic arguments passed to create(). Calls to create pass variable number of arguments, up to MAXARGS, which are then copied into up to 10 variables, arg1...arg10, when are then passed as arguments to makecontext().
+	Instead of pushing INITRET (userret, which calls kill()) onto the stack for return, I used the uc_link posix property to link to end_game_ctxt, created in initialize.c, which does the same thing userret did, calling kill.
+
+--kill.c
+	In case PRSLEEP, add the killed process's wait time to the next item in the delta queue's wait time. Adjust PRWAIT as needed to not fall through.
+
+--sleep10.c, sleep.c
+	Disabled and restored interrupts before/after calling resched()
+
+--chprio.c
+	When changing priority of process in ready queue, dequeue then ready again to make sure it's in priority order.
+	When changing priority of current process, call resched in case another process has higher priority.
+
+--all files
+	Replaced 'char ps' declarations with 'sigset_t ps' to work with disable and restore, which were modified to use posix signals instead of interrupts.
+	Removed "register" hint, which caused SIGSEGV sometimes when processes returned to a swapped out pentry.
