@@ -169,7 +169,7 @@ LOCAL	sysinit()
     pptr->plimit = ( (int)mptr + (FREE_SIZE) - (NULLSTK) - 1); /* TODO: Comment */
     //pptr->pbase = maxaddr;
     // last byte address in pbase, but need an int address
-    // 4 bytes away from the end for hte following MAGIC assignment
+    // 4 bytes away from the end for the following MAGIC assignment
     // TODO: Clarify MAGIC
     pptr->pbase = (int)mptr + (FREE_SIZE) - 1; /* TODO: Comment */
     *( (int *)(pptr->pbase - 3) ) = MAGIC;
@@ -232,14 +232,14 @@ void main_fun(int arg){
     int sem1, pidA, pidB, pidC, main_pid;
 
     main_pid = getpid();
-    write(1, "\nMAIN: MAIN FUNCTION IS ALIVE\N", 30);
+    write(1, "\nMAIN: MAIN FUNCTION IS ALIVE\n", 30);
 
     if((sem1 = screate(0)) == SYSERR){
         write(1, "\nsem create failed\n", 19);
     }
 
     if((pidA = create(procA, MINSTK, 20, name, 1, sem1)) == SYSERR){
-        write(1, "\ncreate A failed]n", 17);
+        write(1, "\ncreate A failed\n", 17);
     }
     if((pidB = create(procB, MINSTK, 20, name, 2, sem1, pidA)) == SYSERR){
         write(1, "\ncreate B failed\n", 17);
