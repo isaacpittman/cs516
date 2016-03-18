@@ -10,7 +10,7 @@
  */
 SYSCALL	freemem(struct  mblock  *block, unsigned size)
 {
-	char	ps;
+    sigset_t	ps;
 	struct	mblock	*p, *q;
 	unsigned top;
 

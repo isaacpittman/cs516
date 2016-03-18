@@ -12,16 +12,16 @@
  */
 SYSCALL signal(register int sem)
 {
-	register struct	sentry	*sptr;
-	char	ps;
+    register struct	sentry	*sptr;
+    sigset_t	ps;
 
-	disable(ps);
-	if (isbadsem(sem) || (sptr= &semaph[sem])->sstate==SFREE) {
-		restore(ps);
-		return(SYSERR);
-	}
-	if ((sptr->semcnt++) < 0)
-		ready(getfirst(sptr->sqhead), RESCHYES);
-	restore(ps);
-	return(OK);
+    disable(ps);
+    if (isbadsem(sem) || (sptr= &semaph[sem])->sstate==SFREE) {
+        restore(ps);
+        return(SYSERR);
+    }
+    if ((sptr->semcnt++) < 0)
+        ready(getfirst(sptr->sqhead), RESCHYES);
+    restore(ps);
+    return(OK);
 }

@@ -10,7 +10,7 @@
  */
 SYSCALL	*getstk(unsigned  int nbytes)
 {
-	char	ps;
+    sigset_t	ps;
 	struct	mblock	*p, *q;	  /* q follows p along memlis  */
 	struct	mblock	*fits, *fitsq;
 	unsigned len;

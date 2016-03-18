@@ -10,7 +10,7 @@
  */
 SYSCALL	*getmem(unsigned nbytes)
 {
-	char	ps;
+    sigset_t	ps;
 	struct	mblock	*p, *q, *leftover;
 
 	disable(ps);
