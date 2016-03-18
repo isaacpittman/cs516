@@ -14,7 +14,6 @@
 
 extern	void	main_fun();			/* address of user's main prog	*/
 extern  void    end_game();         /* end context, kill -> resched */
-extern  void    proc(int);          /* process created by main_fun  */
 extern  void    procA(int);         /* process created by main_fun */
 extern  void    procB(int, int);         /* process created by main_fun */
 extern  void    procC(int, int);    /* process created by main_fun */
@@ -232,7 +231,7 @@ void main_fun(int arg){
     int sem1, pidA, pidB, pidC, main_pid;
 
     main_pid = getpid();
-    write(1, "\nMAIN: MAIN FUNCTION IS ALIVE\n", 30);
+    write(1, "\nINIT: MAIN FUNCTION IS ALIVE\n", 30);
 
     if((sem1 = screate(0)) == SYSERR){
         write(1, "\nsem create failed\n", 19);
@@ -248,8 +247,8 @@ void main_fun(int arg){
         write(1, "\ncreate C failed\n", 17);
     }
 
-    write(1, "\nMAIN: main function has created procs A B and C\n",49);
-    write(1, "\nMAIN: main function about to suspend self\n", 43);
+    write(1, "\nINIT: main function has created procs A B and C\n",49);
+    write(1, "\nINIT: main function about to suspend self\n", 43);
 
     if(resume(pidA) == SYSERR ||
        resume(pidB) == SYSERR ||
@@ -260,15 +259,20 @@ void main_fun(int arg){
     if(suspend(main_pid) == SYSERR){
         write(1, "\nmain suspend failed\n", 21);
     }
-    write(1, "\nMAIN: main function is awake and counting\n", 43);
-    gig_count = lcount = 0;
-    while(gig_count < 5){
-        if(++lcount < 0){
-            ++gig_count;
-            lcount=0;
+    write(1, "\nINIT: main function has been resumed\n", 38);
+
+    for (i=0; i<NPROC; ++i) {
+        if (i==main_pid || i==NULLPROC)
+            continue;
+        if (proctab[i].pstate != PRFREE) {
+            write(1,"\nSome proc is still alive. Sleeping main for 5...\n", 50);
+            sleep(5);
+            --i;
         }
     }
-    write(1, "\nMAIN: main function finished, goodbye\n", 39);
+
+    write(1, "\nINIT: proc table empty, goodbye\n", 33);
+
 }
 
 void end_game(){
@@ -337,24 +341,11 @@ void procC(int arg1, int arg2){
         write(1, "\nin C sleep failed\n", 19);
     }
 
-    write(1, "\nC: process C is awake from sleep, will resume main\n", 52);
+    write(1, "\nC: process C is awake from sleep, will resume INIT\n", 52);
 
     if(resume(arg1) == SYSERR){
         write(1, "\nin C resume failed\n", 20);
     }
 
     write(1, "\nC: process C is finished, goodbye\n", 35);
-}
-
-void proc(int arg){
-    int i, j=0;
-    char msg[] = {' ','P','R','O','C','\0',' '};
-
-    msg[5] = 48+arg;
-    write(1,msg,7);
-    if(arg ==4)sleep(2);
-    for(i=1; i<100000001; ++i){
-        if((i+1)%25000000 == 0)write(1, &msg[5], 1);
-    }
-    write(1,msg,7);
 }
