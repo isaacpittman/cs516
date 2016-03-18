@@ -15,8 +15,8 @@
  */
 int	resched()
 {
-	register struct	pentry	*optr;	/* pointer to old process entry */
-	register struct	pentry	*nptr;	/* pointer to new process entry */
+    struct	pentry	*optr;	/* pointer to old process entry */
+    struct	pentry	*nptr;	/* pointer to new process entry */
 
 	/* no switch needed if current process priority higher than next*/
 

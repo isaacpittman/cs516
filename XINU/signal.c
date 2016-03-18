@@ -10,9 +10,9 @@
  * signal  --  signal a semaphore, releasing one waiting process
  *------------------------------------------------------------------------
  */
-SYSCALL signal(register int sem)
+SYSCALL signal(int sem)
 {
-    register struct	sentry	*sptr;
+    struct	sentry	*sptr;
     sigset_t	ps;
 
     disable(ps);

@@ -12,7 +12,7 @@
 int	ready ( int pid, 		/* id of process to make ready  */
 		int resch)		/* reschedule afterward?        */
 {
-	register struct	pentry	*pptr;
+    struct	pentry	*pptr;
 
 	if (isbadpid(pid))
 		return(SYSERR);
