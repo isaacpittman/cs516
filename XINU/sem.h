@@ -9,9 +9,9 @@
 
 struct	sentry	{		/* semaphore table entry		*/
 	char	sstate;		/* the state SFREE or SUSED		*/
-	short	semcnt;		/* count for this semaphore		*/
-	short	sqhead;		/* q index of head of list		*/
-	short	sqtail;		/* q index of tail of list		*/
+    int	semcnt;		/* count for this semaphore		*/
+    int	sqhead;		/* q index of head of list		*/
+    int	sqtail;		/* q index of tail of list		*/
 };
 extern	struct	sentry	semaph[];
 extern	int	nextsem;
