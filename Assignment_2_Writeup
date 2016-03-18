@@ -8,7 +8,7 @@ Assignment 2
 I believe I accomplished 100% of the requirements for this assignment. To meet the requirements, the following modifications were made to the original XINU source.
 
 --initialize.c
-	Heavily modified to use posix contexts. The idle thread is initialized using makecontext and started using setcontext() from main(). The idle thread then resumes the main_fun() thread, which was created in main() using XINU system call create(). The main_fun() thread then creates the semaphore and procs, outputs the messages as required by the assginment, waits for all procs to finishes, and terminates.
+	Heavily modified to use posix contexts. The idle thread is initialized using makecontext and started using setcontext() from main(), which also initializes the end_game_ctxt (described below), sets up the queues, and sets up memory using malloc. The idle thread then resumes the main_fun() thread, which was created in main() using XINU system call create(). The main_fun() thread then creates the semaphore and procs, outputs the messages as required by the assginment, waits for all procs to finishes, and terminates. 
 
 --clkinit.c
 	I used a SIGVTALRM alarm and setitimer to simulate clock interrupts by calling the clkint function every 1/60th second (16667 microseconds).
