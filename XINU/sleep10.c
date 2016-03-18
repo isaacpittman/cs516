@@ -17,16 +17,18 @@ SYSCALL	sleep10(int n)
 	if (n < 0  || clkruns==0)
 		return(SYSERR);
 	if (n == 0) {			/* sleep10(0) -> end time slice	*/
+        disable(ps);
 		resched();
-        	return(OK);
+        restore(ps);
+        return(OK);
 	}
 
 	disable(ps);
 	insertd(currpid,clockq,n);
 	slnempty = TRUE;
-	sltop = (int *) & q[q[clockq].qnext].qkey;
+    sltop = (int *) & q[q[clockq].qnext].qkey;
 	proctab[currpid].pstate = PRSLEEP;
 	resched();
-        restore(ps);
+    restore(ps);
 	return(OK);
 }
