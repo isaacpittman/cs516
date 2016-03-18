@@ -16,8 +16,10 @@ SYSCALL	sleep(int n)
 
 	if (n<0 || clkruns==0)  return(SYSERR);
 	if (n == 0) {
-		resched();
-		return(OK);
+        disable(ps);
+        resched();
+        restore(ps);
+        return(OK);
 	}
 	while (n >= 1000) {
 		sleep10(10000);
