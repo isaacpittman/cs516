@@ -13,6 +13,10 @@
 
 *kill.c:
 	case PRSLEEP: add my wait time to the next process in the delta queue's wait time. Adjust PRWAIT to not fall through.
-	
 
+*sleep10.c
+	make sure to disable and restore interrupts before/after calling resched()
+*.*
+	replace char ps with sigset_t ps so disable and restore will work
+	remove "register" hint, which causes SIGSEGV
 
