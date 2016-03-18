@@ -100,9 +100,12 @@ int main(int argc, char *argv[])
         perror("getcontext failed in initialize.c");
         exit(5);
     }
+    if(getcontext(&end_game_ctxt) == -1){
+        perror("getcontext failed in initialize.c");
+        exit(5);
+    }
 	sysinit();			/* initialize all of Xinu */
 
-    end_game_ctxt = posix_ctxt_init;
     end_game_ctxt.uc_stack.ss_sp    = (void *)((int)getstk(MINSTK)-MINSTK+1); /* TODO: Comment */
     end_game_ctxt.uc_stack.ss_size  = MINSTK;
     end_game_ctxt.uc_stack.ss_flags = 0;
@@ -122,7 +125,7 @@ int main(int argc, char *argv[])
     /* TODO: Comment */
     setcontext (&(proctab[NULLPROC].posix_ctxt));
 
-    write(1, "\BAD THINGS ARE HAPPENING\n", 26);
+    write(1, "\nBAD THINGS ARE HAPPENING\n", 26);
 	return;				/* unreachable			*/
 }
 
@@ -257,7 +260,7 @@ void main_fun(int arg){
     if(suspend(main_pid) == SYSERR){
         write(1, "\nmain suspend failed\n", 21);
     }
-    write(1, "\nMAIN: main function is awak and counting\n", 43);
+    write(1, "\nMAIN: main function is awake and counting\n", 43);
     gig_count = lcount = 0;
     while(gig_count < 5){
         if(++lcount < 0){
