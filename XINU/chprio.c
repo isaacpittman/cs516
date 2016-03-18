@@ -24,6 +24,15 @@ SYSCALL chprio(pid,newprio)
 	}
 	oldprio = pptr->pprio;
 	pptr->pprio = newprio;
+    switch (pptr->pstate) {
+        case PRREADY:
+            dequeue(pid);
+            ready(pid, RESCHYES);
+            break;
+        case PRCURR:
+            resched();
+            break;
+    }
 	restore(ps);
 	return(oldprio);
 }
