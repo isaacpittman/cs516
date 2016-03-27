@@ -49,6 +49,9 @@ procnum [0-9]
  * * * RULES * * *
  * * * * * * * * */
 %}
+   /* Whenever yylex is called, we will start in the INITIAL state rather than the most recent state */
+   BEGIN(INITIAL);
+
    /* possible XINU commands */
 ^resume[ ].+$ { 
      yyless(7); currentToken=TKN_RESUME; BEGIN(getprocnum);
