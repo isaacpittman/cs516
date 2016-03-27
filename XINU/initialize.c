@@ -355,7 +355,14 @@ void procC(int arg1, int arg2){
 
     int token;
     int value;
-    char resuming_string[] = "\nResuming process X\n";
+    char resume_string[]        = "\tIN RESUME WITH pid X\n";
+    char kill_string[]          = "\tIN KILL WITH pid X\n";
+    char show_proc_string[]     = "\tIN SHOW PROC\n";
+    char show_slp_string[]      = "\tIN SHOW SLP\n";
+    char create_slp_string[]    = "\tIN CREATE WITH SLP\n";
+    char create_rcv_string[]    = "\tIN CREATE WITH RCV\n";
+    char create_wtr_string[]    = "\tIN CREATE WITH WTR\n";
+    char exit_string[]          = "\tCOMMAND LINE INTERPRETER IS DONE, GOODBYE\n";
 
     prompt();
 
@@ -364,9 +371,34 @@ void procC(int arg1, int arg2){
         switch (token) {
         case TKN_RESUME:
             value = yylval;
-            resuming_string[18] = (char)(value + 48);
-            write(1, resuming_string, 20);
+            resume_string[20] = (char)(value + 48);
+            write(1, resume_string, sizeof(resume_string)-1);
+            break;
+        case TKN_KILL:
+            value = yylval;
+            kill_string[18] = (char)(value + 48);
+            write(1, kill_string, sizeof(kill_string)-1);
+            break;
+        case TKN_SHOW_PROC:
+            write(1, show_proc_string, sizeof(show_proc_string)-1);
+            break;
+        case TKN_SHOW_SLP:
+            write(1, show_slp_string, sizeof(show_slp_string)-1);
+            break;
+        case TKN_CREATE_SLP:
+            write(1, create_slp_string, sizeof(create_slp_string)-1);
+            break;
+        case TKN_CREATE_RCV:
+            write(1, create_rcv_string, sizeof(create_rcv_string)-1);
+            break;
+        case TKN_CREATE_WTR:
+            write(1, create_wtr_string, sizeof(create_wtr_string)-1);
+            break;
         }
     }
+
+    write(1, exit_string, sizeof(exit_string)-1);
+
+
 
 }
