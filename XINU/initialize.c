@@ -1,5 +1,6 @@
 /* initialize.c - nulluser, sysinit */
 
+#include "cli.h"
 #include "conf.h"
 #include "kernel.h"
 #include "proc.h"
@@ -12,10 +13,13 @@
 //#include <disk.h>
 //#include <network.h>
 
+extern  int     yylex();            /* the lexical analyzer for our command line interpreter (created by the flex tool) */
+        int     yylval;             /* the value associated with some token returned by the lexical analyzer */
+extern  void    prompt();           /* Display the command line interpreter's prompt */
 extern	void	main_fun();			/* address of user's main prog	*/
 extern  void    end_game();         /* end context, kill -> resched */
 extern  void    procA(int);         /* process created by main_fun */
-extern  void    procB(int, int);         /* process created by main_fun */
+extern  void    procB(int, int);    /* process created by main_fun */
 extern  void    procC(int, int);    /* process created by main_fun */
 
 /* Declarations of major kernel variables */
@@ -337,7 +341,7 @@ void procC(int arg1, int arg2){
     write(1, "\nC: process C is alive\n", 22);
     write(1, "\nC: process C is about to sleep for 30 seconds\n", 48);
 
-    if(sleep(arg2) == SYSERR){
+    if(sleep(1) == SYSERR){
         write(1, "\nin C sleep failed\n", 19);
     }
 
@@ -347,5 +351,22 @@ void procC(int arg1, int arg2){
         write(1, "\nin C resume failed\n", 20);
     }
 
-    write(1, "\nC: process C is finished, goodbye\n", 35);
+    write(1, "\nC: process C is starting the CLI\n", 34);
+
+    int token;
+    int value;
+    char resuming_string[] = "\nResuming process X\n";
+
+    prompt();
+
+    while((token = yylex()) != TKN_EXIT) {
+
+        switch (token) {
+        case TKN_RESUME:
+            value = yylval;
+            resuming_string[18] = (char)(value + 48);
+            write(1, resuming_string, 20);
+        }
+    }
+
 }
