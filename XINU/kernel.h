@@ -53,7 +53,7 @@
 #define	INITPRIO	20		/* initial process priority	*/
 #define	INITNAME	"m_fun"		/* initial process name		*/
 #define	INITRET		userret		/* processes return address	*/
-#define INITARGSC   1       /* number of arguments passed to init thread */
+#define INITARGSC   0       /* number of arguments passed to init thread */
 // #define	INITPS		0		/* initial process PS		*/
 // #define	INITREG		0		/* initial register contents	*/
 #define	QUANTUM		10		/* clock ticks until preemption	*/

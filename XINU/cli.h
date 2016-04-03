@@ -1,3 +1,6 @@
+#ifndef CLI_H
+#define CLI_H
+
 /* Define the tokens used by the the Command Line Interpreter's lexical analyzer. */
 #define TKN_SHOW_PROC   0
 #define TKN_SHOW_SLP    1
@@ -7,3 +10,7 @@
 #define TKN_CREATE_SLP  5
 #define TKN_CREATE_RCV  6
 #define TKN_CREATE_WTR  7
+
+void start_cli();
+
+#endif

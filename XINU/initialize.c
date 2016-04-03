@@ -13,9 +13,6 @@
 //#include <disk.h>
 //#include <network.h>
 
-extern  int     yylex();            /* the lexical analyzer for our command line interpreter (created by the flex tool) */
-        int     yylval;             /* the value associated with some token returned by the lexical analyzer */
-extern  void    prompt();           /* Display the command line interpreter's prompt */
 extern	void	main_fun();			/* address of user's main prog	*/
 extern  void    end_game();         /* end context, kill -> resched */
 extern  void    procA(int);         /* process created by main_fun */
@@ -123,7 +120,7 @@ int main(int argc, char *argv[])
 	/* create a process to execute the user's main program */
 
     /* TODO: Comment */
-    up = userpid = create(main_fun,INITSTK,INITPRIO,INITNAME,INITARGSC, main_fun_cnt);
+    up = userpid = create(main_fun,INITSTK,INITPRIO,INITNAME,INITARGSC);
 
     /* TODO: Comment */
     setcontext (&(proctab[NULLPROC].posix_ctxt));
@@ -220,7 +217,9 @@ void idle_thread(){
     while(1) {
         write(1, "#", 1);
         if(i){
-            resume(up);
+            if (resume(up) == SYSERR) {
+                  write(1, "\ncreate 0 failed\n", 17);
+            }
             i=0;
         }
         resched();
@@ -271,7 +270,7 @@ void main_fun(int arg){
         if (proctab[i].pstate != PRFREE) {
             write(1,"\nSome proc is still alive. Sleeping main for 5...\n", 50);
             sleep(5);
-            --i;
+            i=0;
         }
     }
 
@@ -353,52 +352,6 @@ void procC(int arg1, int arg2){
 
     write(1, "\nC: process C is starting the CLI\n", 34);
 
-    int token;
-    int value;
-    char resume_string[]        = "\tIN RESUME WITH pid X\n";
-    char kill_string[]          = "\tIN KILL WITH pid X\n";
-    char show_proc_string[]     = "\tIN SHOW PROC\n";
-    char show_slp_string[]      = "\tIN SHOW SLP\n";
-    char create_slp_string[]    = "\tIN CREATE WITH SLP\n";
-    char create_rcv_string[]    = "\tIN CREATE WITH RCV\n";
-    char create_wtr_string[]    = "\tIN CREATE WITH WTR\n";
-    char exit_string[]          = "\tCOMMAND LINE INTERPRETER IS DONE, GOODBYE\n";
-
-    prompt();
-
-    while((token = yylex()) != TKN_EXIT) {
-
-        switch (token) {
-        case TKN_RESUME:
-            value = yylval;
-            resume_string[20] = (char)(value + 48);
-            write(1, resume_string, sizeof(resume_string)-1);
-            break;
-        case TKN_KILL:
-            value = yylval;
-            kill_string[18] = (char)(value + 48);
-            write(1, kill_string, sizeof(kill_string)-1);
-            break;
-        case TKN_SHOW_PROC:
-            write(1, show_proc_string, sizeof(show_proc_string)-1);
-            break;
-        case TKN_SHOW_SLP:
-            write(1, show_slp_string, sizeof(show_slp_string)-1);
-            break;
-        case TKN_CREATE_SLP:
-            write(1, create_slp_string, sizeof(create_slp_string)-1);
-            break;
-        case TKN_CREATE_RCV:
-            write(1, create_rcv_string, sizeof(create_rcv_string)-1);
-            break;
-        case TKN_CREATE_WTR:
-            write(1, create_wtr_string, sizeof(create_wtr_string)-1);
-            break;
-        }
-    }
-
-    write(1, exit_string, sizeof(exit_string)-1);
-
-
-
+    start_cli();
 }
+
