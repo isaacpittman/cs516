@@ -12,7 +12,7 @@
  */
 SYSCALL	sleep10(int n)
 {
-	char ps;
+    sigset_t ps;
 
 	if (n < 0  || clkruns==0)
 		return(SYSERR);

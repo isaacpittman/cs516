@@ -15,7 +15,7 @@ LOCAL	newsem();
  */
 SYSCALL screate(int count)			/* initial count ( >=0 )     */
 {
-	char	ps;
+    sigset_t	ps;
 	int	sem;
 
 	disable(ps);

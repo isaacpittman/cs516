@@ -10,7 +10,7 @@
  */
 SYSCALL	recvclr()
 {
-	char	ps;
+    sigset_t	ps;
 	int	msg;
 
 	disable(ps);

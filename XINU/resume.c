@@ -10,7 +10,7 @@
  */
 SYSCALL resume(int pid)
 {
-	char	ps;			/* saved processor status	*/
+    sigset_t	ps;			/* saved processor status	*/
 	struct	pentry	*pptr;		/* pointer to proc. tab. entry	*/
 	int	prio;			/* priority to return		*/
 

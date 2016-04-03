@@ -12,7 +12,7 @@
  */
 SYSCALL	wait(int sem)
 {
-	char	ps;
+    sigset_t	ps;
     struct	sentry	*sptr;
     struct	pentry	*pptr;
 

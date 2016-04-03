@@ -11,7 +11,7 @@
 SYSCALL	suspend(int pid) 		/* id of process to suspend     */
 {
 	struct	pentry	*pptr;		/* pointer to proc. tab. entry	*/
-	char	ps;			/* saved processor status	*/
+    sigset_t	ps;			/* saved processor status	*/
 	int	prio;			/* priority returned		*/
 
 	disable(ps);

@@ -12,7 +12,7 @@
  */
 SYSCALL sdelete(int sem)
 {
-	char	ps;
+    sigset_t	ps;
 	int	pid;
 	struct	sentry	*sptr;		/* address of sem to free	*/
 

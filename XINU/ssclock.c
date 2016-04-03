@@ -22,7 +22,7 @@ int stopclk()
  */
 int strtclk()
 {
-        char ps;
+        sigset_t ps;
         int makeup;
         int next;
 

@@ -14,7 +14,7 @@ SYSCALL chprio(pid,newprio)
 {
 	int	oldprio;
 	struct	pentry	*pptr;
-        char    ps;
+    sigset_t    ps;
 
 	disable(ps);
 	if (isbadpid(pid) || newprio<=0 ||

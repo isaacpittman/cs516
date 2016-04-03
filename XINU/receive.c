@@ -12,7 +12,7 @@ SYSCALL	receive()
 {
 	struct	pentry	*pptr;
 	int	msg;
-	char	ps;
+    sigset_t	ps;
 
 	disable(ps);
 	pptr = &proctab[currpid];
