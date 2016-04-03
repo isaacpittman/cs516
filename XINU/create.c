@@ -25,7 +25,7 @@ SYSCALL create(void (*procaddr)(),	/* procedure address            */
 	int	i;
     int	*a;                     /* points to list of args	*/
     int	*saddr;                 /* stack address		*/
-    char	ps;                 /* saved processor status	*/
+    sigset_t	ps;                 /* saved processor status	*/
 	int	INITRET();
     int args[MAXARGS];          /* variadic arguments are copied here */
     va_list ap;                 /* used to iterate through variadic args */
@@ -68,14 +68,11 @@ SYSCALL create(void (*procaddr)(),	/* procedure address            */
     //pptr->pregs[SP] = (int)saddr;
 
     /* Create a context */
-    if(getcontext(&pptr->posix_ctxt) == -1){
-            perror("getcontext for posix_ctxt in create");
-            exit(1);
-    }
+    pptr->posix_ctxt=posix_ctxt_init;
 
     pptr->posix_ctxt.uc_stack.ss_flags = 0;
     pptr->posix_ctxt.uc_stack.ss_size  = ssize;
-    pptr->posix_ctxt.uc_stack.ss_sp    = pptr->plimit; // Plimit points to shallow end of stack as required by ss_sp
+    pptr->posix_ctxt.uc_stack.ss_sp    = (void *)pptr->plimit; // Plimit points to shallow end of stack as required by ss_sp
     pptr->posix_ctxt.uc_link           = &end_game_ctxt; // Since we're using u_context, link to end_game_ctxt on return instead of calling INITRET
 
     /* No easy way to pass the args array to makecontext, since it uses variadic arguments. Instead, just hardcode 10 args variables and pass them as needed.
@@ -109,6 +106,7 @@ SYSCALL create(void (*procaddr)(),	/* procedure address            */
         arg2=args[1];
     case 1:
         arg1=args[0];
+    case 0:
         break;
     default:
         perror("unknown number of args in create");
