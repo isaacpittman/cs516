@@ -86,6 +86,10 @@ int main(int argc, char *argv[])
     main_fun_cnt = 1;
 
     sigfillset(&full_block);
+    sigdelset(&full_block, SIGBUS);
+    sigdelset(&full_block, SIGFPE);
+    sigdelset(&full_block, SIGILL);
+    sigdelset(&full_block, SIGSEGV);
     sigemptyset(&full_unblock);
 
 /*
@@ -100,13 +104,12 @@ int main(int argc, char *argv[])
         perror("getcontext failed in initialize.c");
         exit(5);
     }
-    if(getcontext(&end_game_ctxt) == -1){
-        perror("getcontext failed in initialize.c");
-        exit(5);
-    }
+
+    end_game_ctxt=posix_ctxt_init;
+
 	sysinit();			/* initialize all of Xinu */
 
-    end_game_ctxt.uc_stack.ss_sp    = (void *)((int)getstk(MINSTK)-MINSTK+1); /* TODO: Comment */
+    end_game_ctxt.uc_stack.ss_sp    = (void *)((int)getstk(MINSTK)-MINSTK); /* TODO: Comment */
     end_game_ctxt.uc_stack.ss_size  = MINSTK;
     end_game_ctxt.uc_stack.ss_flags = 0;
     makecontext(&end_game_ctxt, end_game, 0);

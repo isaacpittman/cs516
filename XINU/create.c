@@ -51,7 +51,7 @@ SYSCALL create(void (*procaddr)(),	/* procedure address            */
 	pptr->pstklen = ssize;
 	pptr->psem = 0;
 	pptr->phasmsg = FALSE;
-	pptr->plimit = (int)(saddr - ssize + 1);
+    pptr->plimit = (int)(saddr - ssize);
 	pptr->pargs = nargs;
     pptr->paddr = procaddr;
 
