@@ -1,1 +1,3 @@
 Used tutorial at http://web.eecs.utk.edu/~bvz/cs461/notes/flex/ including sample code for flex file
+Used https://en.wikibooks.org/wiki/C_Programming/C_Reference/stdlib.h/itoa for itoa function, since assignment requires only XINU system calls and itoa is a non-standard function defined in stdlib.h
+
