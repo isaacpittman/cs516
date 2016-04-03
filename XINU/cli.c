@@ -18,15 +18,16 @@ void    reverse(char s[]);          /* reverse a string. used by itoa. */
 void    show_proc();
 void    show_slp();
 void    create_slp();
+void    do_kill(int);
+void    do_resume(int);
+void    create_rcv();
 
 /* Dummy processes */
 void    slp_func();
+void    rcv_func();
 
 int token;
 int value;
-char resume_msg[]        = "\tIN RESUME WITH pid X\n";
-char kill_msg[]          = "\tIN KILL WITH pid X\n";
-char create_rcv_msg[]    = "\tIN CREATE WITH RCV\n";
 char create_wtr_msg[]    = "\tIN CREATE WITH WTR\n";
 char exit_msg[]          = "\tCOMMAND LINE INTERPRETER IS DONE, GOODBYE\n";
 
@@ -38,13 +39,11 @@ void start_cli() {
         switch (token) {
         case TKN_RESUME:
             value = yylval;
-            resume_msg[20] = (char)(value + 48);
-            write(1, resume_msg, sizeof(resume_msg)-1);
+            do_resume(value);
             break;
         case TKN_KILL:
             value = yylval;
-            kill_msg[18] = (char)(value + 48);
-            write(1, kill_msg, sizeof(kill_msg)-1);
+            do_kill(value);
             break;
         case TKN_SHOW_PROC:
             show_proc();
@@ -56,7 +55,7 @@ void start_cli() {
             create_slp();
             break;
         case TKN_CREATE_RCV:
-            write(1, create_rcv_msg, sizeof(create_rcv_msg)-1);
+            create_rcv();
             break;
         case TKN_CREATE_WTR:
             write(1, create_wtr_msg, sizeof(create_wtr_msg)-1);
@@ -67,18 +66,55 @@ void start_cli() {
     write(1, exit_msg, sizeof(exit_msg)-1);
 }
 
+void create_rcv(){
+    char create_rcv_msg[]    = "\tIN CREATE WITH RCV\n";
+    write(1, create_rcv_msg, sizeof(create_rcv_msg)-1);
+
+    int rcv_func_pid;
+    if((rcv_func_pid = create(rcv_func, MINSTK, 20, "RCV", 1, 0)) == SYSERR){
+        write(1, "\ncreate rcv_func failed\n", 24);
+    }
+}
+
+void rcv_func(){
+    char rcv_proc_alive_msg[] = "\nRCV process is alive with pid N\n";
+    char rcv_got_message_msg[] = "\nRCV received message\n";
+
+    rcv_proc_alive_msg[31] = (getpid() + 48);
+    write(1, rcv_proc_alive_msg, sizeof(rcv_proc_alive_msg)-1);
+
+    if(receive() == SYSERR){
+        write(1, "\nin rcv_func receive failed\n", 28);
+    }
+
+    write(1, rcv_got_message_msg, sizeof(rcv_got_message_msg)-1);
+}
+
+void do_resume(int pid){
+    char resume_msg[]        = "\tIN RESUME WITH pid X\n";
+    resume_msg[20] = (char)(value + 48);
+    write(1, resume_msg, sizeof(resume_msg)-1);
+    resume(pid);
+}
+
+void do_kill(int pid){
+    char kill_msg[]          = "\tIN KILL WITH pid X\n";
+    kill_msg[18] = (char)(pid + 48);
+    write(1, kill_msg, sizeof(kill_msg)-1);
+    kill(pid);
+}
+
 void create_slp(){
     char create_slp_msg[]    = "\tIN CREATE WITH SLP\n";
     write(1, create_slp_msg, sizeof(create_slp_msg)-1);
 
     int slp_func_pid;
-    if((slp_func_pid = create(slp_func, MINSTK, 20, "SLP", 1, 0)) == SYSERR){
+    if((slp_func_pid = create(slp_func, MINSTK, 20, "SLP", 0)) == SYSERR){
         write(1, "\ncreate slp_func failed\n", 24);
     }
-    resume(slp_func_pid);
 }
 
-void slp_func(int unused){
+void slp_func(){
     char slp_proc_alive_msg[] = "\nSLP process is alive with pid N\n";
     char slp_will_sleep_msg[] = "\nSLP will now sleep for 120 seconds\n";
 
