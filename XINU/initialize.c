@@ -343,7 +343,7 @@ void procC(int arg1, int arg2){
     write(1, "\nC: process C is alive\n", 22);
     write(1, "\nC: process C is about to sleep for 30 seconds\n", 48);
 
-    if(sleep(1) == SYSERR){
+    if(sleep(30) == SYSERR){
         write(1, "\nin C sleep failed\n", 19);
     }
 

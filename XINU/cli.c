@@ -17,19 +17,30 @@ void    reverse(char s[]);          /* reverse a string. used by itoa. */
 /* CLI functions */
 void    show_proc();
 void    show_slp();
+void    show_rdy();
 void    create_slp();
 void    do_kill(int);
 void    do_resume(int);
+void    do_suspend(int);
 void    create_rcv();
+void    create_wtr();
+void    create_sig();
+void    create_snd();
+void    create_rdy();
 
 /* Dummy processes */
 void    slp_func();
 void    rcv_func();
+void    wtr_func();
+void    sig_func();
+void    snd_func();
+void    rdy_func();
 
-int token;
-int value;
-char create_wtr_msg[]    = "\tIN CREATE WITH WTR\n";
-char exit_msg[]          = "\tCOMMAND LINE INTERPRETER IS DONE, GOODBYE\n";
+int     sem             = -1; /* Semaphore for wtr_func and sig_func */
+int     rcv_func_pid    = -1; /* Receiver pid for rcv_func and snd_func */
+int     token;
+int     value;
+char    exit_msg[]          = "\tCOMMAND LINE INTERPRETER IS DONE, GOODBYE\n";
 
 void start_cli() {
     prompt();
@@ -51,6 +62,9 @@ void start_cli() {
         case TKN_SHOW_SLP:
             show_slp();
             break;
+        case TKN_SHOW_RDY:
+            show_rdy();
+            break;
         case TKN_CREATE_SLP:
             create_slp();
             break;
@@ -58,7 +72,20 @@ void start_cli() {
             create_rcv();
             break;
         case TKN_CREATE_WTR:
-            write(1, create_wtr_msg, sizeof(create_wtr_msg)-1);
+            create_wtr();
+            break;
+        case TKN_CREATE_SIG:
+            create_sig();
+            break;
+        case TKN_CREATE_SND:
+            create_snd();
+            break;
+        case TKN_CREATE_RDY:
+            create_rdy();
+            break;
+        case TKN_SUSPEND:
+            value = yylval;
+            do_suspend(value);
             break;
         }
     }
@@ -66,11 +93,116 @@ void start_cli() {
     write(1, exit_msg, sizeof(exit_msg)-1);
 }
 
+void create_rdy(){
+    char create_rdy_msg[]    = "\tIN CREATE WITH RDY\n";
+    write(1, create_rdy_msg, sizeof(create_rdy_msg)-1);
+
+    int rdy_func_pid;
+    if((rdy_func_pid = create(rdy_func, MINSTK, 20, "RDY", 1, 0)) == SYSERR){
+        write(1, "\ncreate rdy_func failed\n", 24);
+    }
+}
+
+void rdy_func(){
+    char rdy_proc_alive_msg[] = "\nRDY process is alive with pid N\n";
+    char rdy_will_spin_msg[] = "\nRDY will spin forever\n";
+
+    rdy_proc_alive_msg[31] = (getpid() + 48);
+    write(1, rdy_proc_alive_msg, sizeof(rdy_proc_alive_msg)-1);
+
+    write(1, rdy_will_spin_msg, sizeof(rdy_will_spin_msg)-1);
+
+    while (1);
+}
+
+void create_sig(){
+    char create_sig_msg[]    = "\tIN CREATE WITH SIG\n";
+    write(1, create_sig_msg, sizeof(create_sig_msg)-1);
+
+    int sig_func_pid;
+    if((sig_func_pid = create(sig_func, MINSTK, 20, "SIG", 1, 0)) == SYSERR){
+        write(1, "\ncreate sig_func failed\n", 24);
+    }
+}
+
+void sig_func(){
+    char sig_proc_alive_msg[] = "\nSIG process is alive with pid N\n";
+    char sig_sent_signal_msg[] = "\nSIG sent signal\n";
+
+    sig_proc_alive_msg[31] = (getpid() + 48);
+    write(1, sig_proc_alive_msg, sizeof(sig_proc_alive_msg)-1);
+
+    if (sem==-1){
+        if((sem = screate(0)) == SYSERR){
+            write(1, "\nsem create failed\n", 19);
+        }
+    }
+
+    if(signal(sem) == SYSERR){
+        write(1, "\nin sig_func signal failed\n", 27);
+    }
+
+    write(1, sig_sent_signal_msg, sizeof(sig_sent_signal_msg)-1);
+}
+
+void create_snd(){
+    char create_snd_msg[]    = "\tIN CREATE WITH SND\n";
+    write(1, create_snd_msg, sizeof(create_snd_msg)-1);
+
+    int snd_func_pid;
+    if((snd_func_pid = create(snd_func, MINSTK, 20, "SND", 1, 0)) == SYSERR){
+        write(1, "\ncreate snd_func failed\n", 24);
+    }
+}
+
+void snd_func(){
+    char snd_proc_alive_msg[] = "\nSND process is alive with pid N\n";
+    char snd_sent_message_msg[] = "\nSND sent message\n";
+
+    snd_proc_alive_msg[31] = (getpid() + 48);
+    write(1, snd_proc_alive_msg, sizeof(snd_proc_alive_msg)-1);
+
+    if(send(rcv_func_pid, 999) == SYSERR){
+        write(1, "\nin snd_func send failed\n", 25);
+    }
+
+    write(1, snd_sent_message_msg, sizeof(snd_sent_message_msg)-1);
+}
+
+void create_wtr(){
+    char create_wtr_msg[]    = "\tIN CREATE WITH WTR\n";
+    write(1, create_wtr_msg, sizeof(create_wtr_msg)-1);
+
+    int wtr_func_pid;
+    if((wtr_func_pid = create(wtr_func, MINSTK, 20, "WTR", 1, 0)) == SYSERR){
+        write(1, "\ncreate wtr_func failed\n", 24);
+    }
+}
+
+void wtr_func(){
+    char wtr_proc_alive_msg[] = "\nWTR process is alive with pid N\n";
+    char wtr_got_signal_msg[] = "\nWTR received signal\n";
+
+    wtr_proc_alive_msg[31] = (getpid() + 48);
+    write(1, wtr_proc_alive_msg, sizeof(wtr_proc_alive_msg)-1);
+
+    if (sem==-1){
+        if((sem = screate(0)) == SYSERR){
+            write(1, "\nsem create failed\n", 19);
+        }
+    }
+
+    if(wait(sem) == SYSERR){
+        write(1, "\nin wtr_func wait failed\n", 25);
+    }
+
+    write(1, wtr_got_signal_msg, sizeof(wtr_got_signal_msg)-1);
+}
+
 void create_rcv(){
     char create_rcv_msg[]    = "\tIN CREATE WITH RCV\n";
     write(1, create_rcv_msg, sizeof(create_rcv_msg)-1);
 
-    int rcv_func_pid;
     if((rcv_func_pid = create(rcv_func, MINSTK, 20, "RCV", 1, 0)) == SYSERR){
         write(1, "\ncreate rcv_func failed\n", 24);
     }
@@ -102,6 +234,13 @@ void do_kill(int pid){
     kill_msg[18] = (char)(pid + 48);
     write(1, kill_msg, sizeof(kill_msg)-1);
     kill(pid);
+}
+
+void do_suspend(int pid){
+    char suspend_msg[]          = "\tIN SUSP WITH pid X\n";
+    suspend_msg[18] = (char)(pid + 48);
+    write(1, suspend_msg, sizeof(suspend_msg)-1);
+    suspend(pid);
 }
 
 void create_slp(){
@@ -194,6 +333,29 @@ void show_slp(){
         proc_n_wait_ticks_msg[6] = (char)(next+48); //convert the pid to ascii and insert into message
         itoa(q[next].qkey, &proc_n_wait_ticks_msg[19]); // convert the ticks to ascii and insert into message
         write(1, proc_n_wait_ticks_msg, sizeof(proc_n_wait_ticks_msg)-1);
+    }
+
+    restore(ps);
+
+}
+
+void show_rdy(){
+
+    sigset_t ps;
+
+    char show_rdy_msg[]             = "\tIN SHOW RDY\n";
+    char proc_n_priority_msg[]    = "\nPROC N PRIORITY   \n";
+
+    write(1, show_rdy_msg, sizeof(show_rdy_msg)-1);
+
+    /* Disable interrupts to give a consistent view of the ready queue */
+    disable(ps);
+
+    int next=rdyhead;
+    while ((next=q[next].qnext) < NPROC){
+        proc_n_priority_msg[6] = (char)(next+48); //convert the pid to ascii and insert into message
+        itoa(q[next].qkey, &proc_n_priority_msg[17]); // convert the ticks to ascii and insert into message
+        write(1, proc_n_priority_msg, sizeof(proc_n_priority_msg)-1);
     }
 
     restore(ps);

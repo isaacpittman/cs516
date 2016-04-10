@@ -59,6 +59,9 @@ procnum [0-9]
 ^kill[ ].+$ { 
      yyless(5); currentToken=TKN_KILL; BEGIN(getprocnum);
 }
+^suspend[ ].+$ { 
+     yyless(8); currentToken=TKN_SUSPEND; BEGIN(getprocnum);
+}
 <getprocnum>{procnum} { 
      yylval=atoi(yytext);
      return currentToken;
@@ -77,6 +80,10 @@ procnum [0-9]
      return TKN_SHOW_SLP;
 }
 
+^show\ rdy$ {
+     return TKN_SHOW_RDY;
+}
+
 ^create\ slp$ {
      return TKN_CREATE_SLP;
 }
@@ -85,8 +92,20 @@ procnum [0-9]
      return TKN_CREATE_RCV;
 }
 
+^create\ rdy$ {
+     return TKN_CREATE_RDY;
+}
+
 ^create\ wtr$ {
      return TKN_CREATE_WTR;
+}
+
+^create\ snd {
+     return TKN_CREATE_SND;
+}
+
+^create\ sig {
+     return TKN_CREATE_SIG;
 }
 
 ^exit$ {
@@ -99,6 +118,7 @@ procnum [0-9]
 
    /* Print a prompt after every newline */
 \n { prompt(); }
+
 %%
 
 /* * * * * * * * * * * 
@@ -106,5 +126,5 @@ procnum [0-9]
  * * * * * * * * * * *
  */
 void prompt() {
- write(1, "prompt>", 7);
+    write(1, "prompt>", 7);
 }

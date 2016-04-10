@@ -10,6 +10,11 @@
 #define TKN_CREATE_SLP  5
 #define TKN_CREATE_RCV  6
 #define TKN_CREATE_WTR  7
+#define TKN_CREATE_SIG  8
+#define TKN_CREATE_SND  9
+#define TKN_SHOW_RDY    10
+#define TKN_SUSPEND     11
+#define TKN_CREATE_RDY  12
 
 void start_cli();
 

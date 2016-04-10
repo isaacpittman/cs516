@@ -1,3 +1,30 @@
-Used tutorial at http://web.eecs.utk.edu/~bvz/cs461/notes/flex/ including sample code for flex file
-Used https://en.wikibooks.org/wiki/C_Programming/C_Reference/stdlib.h/itoa for itoa function, since assignment requires only XINU system calls and itoa is a non-standard function defined in stdlib.h
+Isaac Pittman
+isaac_pittman@student.uml.edu
+COMP 5160 Operating Systems II
+Spring 2016
+
+Assignment 3
+
+I believe I accomplished 100% of the requirements for this assignment. The command interpreter is started by procC, a XINU process child of main. The cli.lex file contains the flex definitions used to accept user input. (The command flex cli.lex was used to generate the lex.yy.c file, which is then compiled into the project.) The cli.lex file's input source has been modified to put stdin into non-blocking mode using fcntl() and to use the Linux call getc (which internally calls read). The file cli.c calls the yylex() function in the flex generated file to get the next token and its value, if applicable, then performs the requested command.
+
+The command interpreter has the following commands:
+	resume N: Resumes process N.
+	kill N: Kills process N.
+	show proc: Shows the XINU processes and their states.
+	show slp: Shows the sleep queue in delta order with the process numbers and their remaining delta ticks.
+	show rdy: Shows the ready queue in priority order with the process numbers and their priorities.
+	create slp: Creates a process that will sleep for 120 seconds.
+	create wtr: Creates a process that will wait on a semaphore. Creates a new semaphore if create wtr or create sig have not been used before.
+	create sig: Creates a process that will signal a sempahore. Creates a new semaphore if create wtr or create sig have not been used before.
+	create snd: Creates a process that will send a message.
+	create rcv: Creates a process that will receive a message.
+	suspend N: Suspends process N.
+	create rdy: Creates a process that will spin forever in an infinite loop. This is useful for testing the ready queue and the suspend command.
+	exit: Exits the command interpreter.
+
+Invalid commands will warn the user that they are invalid.
+
+I tested the interpreter manually by issuing commands and verifying that the correct output was produced. All commands will output that they are performing their action. All created processes will output their pid when started and what function they perform.
+
+For the flex file, I used code from http://web.eecs.utk.edu/~bvz/cs461/notes/flex/ as a template. I used https://en.wikibooks.org/wiki/C_Programming/C_Reference/stdlib.h/itoa for itoa function.
 
