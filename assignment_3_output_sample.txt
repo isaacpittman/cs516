@@ -1,0 +1,402 @@
+[ipittman@mercury Assignment3]$ ./xinu.exe 
+
+Starting clock interrupt timer
+#
+INIT: MAIN FUNCTION IS ALIVE
+
+INIT: main function has created procs A B and C
+
+INIT: main function about to suspend self
+
+A: process A is alive
+A: process A is about to wait on a sem
+B: process B is alive
+B: process B is about to sleep for 2 seconds
+C: process C is alive
+C: process C is about to sleep for 30 seconds
+#############
+B: process B is awake from sleep, will signal sem
+
+A: process A is awake from sem, will wait for msg
+
+B: process B is again to sleep for 2 seconds##############
+B: process B is awake from sleep, will send msg to A
+
+A: process A has received a msg, goodbye
+<>
+B: process B is about to sleep for 2 seconds##############
+B: process B is awake from sleep, goodbye
+<>########################################################################################################################################################################
+C: process C is awake from sleep, will resume INIT
+
+INIT: main function has been resumed
+
+Some proc is still alive. Sleeping main for 5...
+
+C: process C is starting the CLI
+prompt>show proc
+	IN SHOW PROC
+
+PROC 0 STATE READY
+
+PROC 1 STATE FREE
+
+PROC 2 STATE FREE
+
+PROC 3 STATE FREE
+
+PROC 4 STATE FREE
+
+PROC 5 STATE FREE
+
+PROC 6 STATE CURRENT
+
+PROC 7 STATE FREE
+
+PROC 8 STATE FREE
+
+PROC 9 STATE SLEEPING
+prompt>create slp
+	IN CREATE WITH SLP
+prompt>show proc
+	IN SHOW PROC
+
+PROC 0 STATE READY
+
+PROC 1 STATE FREE
+
+PROC 2 STATE FREE
+
+PROC 3 STATE FREE
+
+PROC 4 STATE FREE
+
+PROC 5 STATE SUSPENDED
+
+PROC 6 STATE CURRENT
+
+PROC 7 STATE FREE
+
+PROC 8 STATE FREE
+
+PROC 9 STATE SLEEPING
+prompt>resume 
+Some proc is still alive. Sleeping main for 5...
+5
+	IN RESUME WITH pid 5
+
+SLP process is alive with pid 5
+
+SLP will now sleep for 120 seconds
+prompt>show proc
+	IN SHOW PROC
+
+PROC 0 STATE READY
+
+PROC 1 STATE FREE
+
+PROC 2 STATE FREE
+
+PROC 3 STATE FREE
+
+PROC 4 STATE FREE
+
+PROC 5 STATE SLEEPING
+
+PROC 6 STATE CURRENT
+
+PROC 7 STATE FREE
+
+PROC 8 STATE FREE
+
+PROC 9 STATE SLEEPING
+prompt>show slp
+	IN SHOW SLP
+
+PROC 9 WAIT TICKS 31       
+
+PROC 5 WAIT TICKS 1160     
+prompt>show slp
+	IN SHOW SLP
+
+PROC 9 WAIT TICKS 20       
+
+PROC 5 WAIT TICKS 1160     
+prompt>creat
+Some proc is still alive. Sleeping main for 5...
+e rdy
+	IN CREATE WITH RDY
+prompt>resume 4
+	IN RESUME WITH pid 4
+
+RDY process is alive with pid 4
+
+RDY will spin forever
+prompt>show proc
+	IN SHOW PROC
+
+PROC 0 STATE READY
+
+PROC 1 STATE FREE
+
+PROC 2 STATE FREE
+
+PROC 3 STATE FREE
+
+PROC 4 STATE READY
+
+PROC 5 STATE SLEEPING
+
+PROC 6 STATE CURRENT
+
+PROC 7 STATE FREE
+
+PROC 8 STATE FREE
+
+PROC 9 STATE SLEEPING
+prompt>suspend 4
+	IN SUSP WITH pid 4
+prompt>show proc
+	IN SHOW PROC
+
+PROC 0 STATE READY
+
+PROC 1 STATE FREE
+
+PROC 2 STATE FREE
+
+PROC 3 STATE FREE
+
+PROC 4 STATE SUSPENDED
+
+PROC 5 STATE SLEEPING
+
+PROC 6 STATE CURRENT
+
+PROC 7 STATE FREE
+
+PROC 8 STATE FREE
+
+PROC 9 STATE READY
+prompt>kill 4
+Some proc is still alive. Sleeping main for 5...
+
+	IN KILL WITH pid 4
+prompt>show proc
+	IN SHOW PROC
+
+PROC 0 STATE READY
+
+PROC 1 STATE FREE
+
+PROC 2 STATE FREE
+
+PROC 3 STATE FREE
+
+PROC 4 STATE FREE
+
+PROC 5 STATE SLEEPING
+
+PROC 6 STATE CURRENT
+
+PROC 7 STATE FREE
+
+PROC 8 STATE FREE
+
+PROC 9 STATE SLEEPING
+prompt>create rdy
+	IN CREATE WITH RDY
+prompt>resume 3
+	IN RESUME WITH pid 3
+
+RDY process is alive with pid 3
+
+RDY will spin forever
+prompt>show rdy
+	IN SHOW RDY
+
+PROC 0 PRIORITY 0
+
+PROC 3 PRIORITY 20
+PROC 9 PRIORITY 20prompt>
+Some proc is still alive. Sleeping main for 5...
+show rdy
+	IN SHOW RDY
+
+PROC 0 PRIORITY 0
+
+PROC 3 PRIORITY 20prompt>
+Some proc is still alive. Sleeping main for 5...
+kill 3
+	IN KILL WITH pid 3
+prompt>create wtr 
+	IN CREATE WITH WTR
+prompt>resume 2
+	IN RESUME WITH pid 2
+
+WTR process is alive with pid 2
+prompt>create sig
+Some proc is still alive. Sleeping main for 5...
+
+	IN CREATE WITH SIG
+prompt>show proc
+	IN SHOW PROC
+
+PROC 0 STATE READY
+
+PROC 1 STATE SUSPENDED
+
+PROC 2 STATE SEMWAITING
+
+PROC 3 STATE FREE
+
+PROC 4 STATE FREE
+
+PROC 5 STATE SLEEPING
+
+PROC 6 STATE CURRENT
+
+PROC 7 STATE FREE
+
+PROC 8 STATE FREE
+
+PROC 9 STATE SLEEPING
+prompt>resume 1
+	IN RESUME WITH pid 1
+
+SIG process is alive with pid 1
+prompt>show proc
+	IN SHOW PROC
+
+PROC 0 STATE READY
+
+PROC 1 STATE READY
+
+PROC 2 STATE READY
+
+PROC 3 STATE FREE
+
+PROC 4 STATE FREE
+
+PROC 5 STATE SLEEPING
+
+PROC 6 STATE CURRENT
+
+PROC 7 STATE FREE
+
+PROC 8 STATE FREE
+
+PROC 9 STATE SLEEPING
+prompt>
+WTR received signal
+<>
+SIG sent signal
+<>show proc
+	IN SHOW PROC
+
+PROC 0 STATE READY
+
+PROC 1 STATE FREE
+
+PROC 2 STATE FREE
+
+PROC 3 STATE FREE
+
+PROC 4 STATE FREE
+
+PROC 5 STATE SLEEPING
+
+PROC 6 STATE CURRENT
+
+PROC 7 STATE FREE
+
+PROC 8 STATE FREE
+
+PROC 9 STATE SLEEPING
+prompt>
+Some proc is still alive. Sleeping main for 5...
+create rcv
+	IN CREATE WITH RCV
+prompt>resume 8
+	IN RESUME WITH pid 8
+
+RCV process is alive with pid 8
+prompt>create snd
+	IN CREATE WITH SND
+prompt>resume 7
+	IN RESUME WITH pid 7
+
+SND process is alive with pid 7
+prompt>show proc
+	IN SHOW PROC
+
+PROC 0 STATE READY
+
+PROC 1 STATE FREE
+
+PROC 2 STATE FREE
+
+PROC 3 STATE FREE
+
+PROC 4 STATE FREE
+
+PROC 5 STATE SLEEPING
+
+PROC 6 STATE CURRENT
+
+PROC 7 STATE READY
+
+PROC 8 STATE READY
+
+PROC 9 STATE SLEEPING
+prompt>
+RCV received message
+<>
+SND sent message
+<>
+Some proc is still alive. Sleeping main for 5...
+create rcv 
+	IN CREATE WITH RCV
+prompt>resume 4
+	IN RESUME WITH pid 4
+
+RCV process is alive with pid 4
+prompt>show proc
+	IN SHOW PROC
+
+PROC 0 STATE READY
+
+PROC 1 STATE FREE
+
+PROC 2 STATE FREE
+
+PROC 3 STATE FREE
+
+PROC 4 STATE RECVWAITING
+
+PROC 5 STATE SLEEPING
+
+PROC 6 STATE CURRENT
+
+PROC 7 STATE FREE
+
+PROC 8 STATE FREE
+
+PROC 9 STATE SLEEPING
+prompt>asdf
+error: asdf 
+prompt>resume asdf
+asdf is not valid procnum.
+prompt>resume 00
+00 is not valid procnum.
+prompt>
+Some proc is still alive. Sleeping main for 5...
+exit
+	COMMAND LINE INTERPRETER IS DONE, GOODBYE
+<>##########################
+Some proc is still alive. Sleeping main for 5...
+##################################
+Some proc is still alive. Sleeping main for 5...
+#########^C
+[ipittman@mercury Assignment3]$ 
+
