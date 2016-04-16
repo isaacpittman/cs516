@@ -13,7 +13,7 @@
 int ttyputc(struct devsw *devptr, char ch)
 {
 	struct	tty   *iptr;
-	char	ps;
+    sigset_t	ps;
 
 	iptr = &tty[devptr->dvminor];
         if ( ch==NEWLINE && iptr->ocrlf )
