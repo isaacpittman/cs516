@@ -13,7 +13,7 @@ LOCAL readcopy();
  */
 int ttyread(struct devsw *devptr, char *buff, int count)
 {
-	char ps;
+    sigset_t ps;
 	register struct	tty *iptr;
 	int avail, nread;
 

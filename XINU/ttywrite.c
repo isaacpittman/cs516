@@ -16,7 +16,7 @@ int ttywrite(struct devsw *devptr, char *buff, int count)
 {
 	register struct tty *ttyp;
 	int avail;
-	char ps;
+    sigset_t ps;
 
 	if (count < 0)
 		return(SYSERR);

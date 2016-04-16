@@ -14,7 +14,7 @@ int ttycntl(struct devsw *devptr, int func, char *addr)
 {
 	register struct	tty *ttyp;
 	char	ch;
-	char	ps;
+    sigset_t	ps;
 
 	ttyp = &tty[devptr->dvminor];
 	switch ( func )	{

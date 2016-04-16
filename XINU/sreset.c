@@ -13,7 +13,7 @@
 SYSCALL sreset(int sem, int count)
 {
 	struct	sentry	*sptr;
-	char	ps;
+    sigset_t	ps;
 	int	pid;
 	int	slist;
 

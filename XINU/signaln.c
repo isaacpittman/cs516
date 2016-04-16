@@ -13,7 +13,7 @@
 SYSCALL signaln(int sem, int count)
 {
 	struct	sentry	*sptr;
-	char	ps;
+    sigset_t	ps;
 
 	disable(ps);
 	if (isbadsem(sem) || semaph[sem].sstate==SFREE || count<=0) {

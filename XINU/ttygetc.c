@@ -11,7 +11,7 @@
  */
 ttygetc(struct devsw *devptr)
 {
-	char	ps;
+    sigset_t	ps;
 	int	ch;
 	struct	tty   *iptr;
 
