@@ -22,7 +22,8 @@ struct	mblock	{
 	};
 extern	struct	mblock	memlist;	/* head of free memory list	*/
 extern	int	*maxaddr;		/* max memory address		*/
-extern	int	end;			/* address beyond loaded memory	*/
+// extern	int	end;			/* address beyond loaded memory	*/
+extern	int	free_start;
 extern  int     *getstk();		/* declaration			*/
-extern  int     *getmem();		/* declaration                  */
+extern  void    *getmem();		/* declaration                  */
 
