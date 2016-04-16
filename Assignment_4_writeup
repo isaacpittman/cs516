@@ -1,0 +1,3 @@
+in conf.c, replaced interrupt vectors with signals SIGUSR1/2
+in iosetvec, configure to use a signal handler to call our dispatch routine, instead of using the device vectors
+
