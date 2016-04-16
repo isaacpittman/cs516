@@ -1,6 +1,9 @@
 /* conf.c (GENERATED FILE; DO NOT EDIT) */
 
-#include <conf.h>
+#include "conf.h"
+
+#define SIGUSR1 (10)
+#define SIGUSR2 (12)
 
 /* device independent I/O switch */
 
@@ -21,6 +24,6 @@ iint-handler, oint-handler, control-block, minor-device,
 ttyinit, ttyopen, ionull,
 ttyread, ttywrite, ioerr,
 ttygetc, ttyputc, ttycntl,
-0177560, 0060, 0064,
+NULLPTR, SIGUSR1, SIGUSR2,
 ttyiin, ttyoin, NULLPTR, 0,
 	};
