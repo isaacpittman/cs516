@@ -14,8 +14,8 @@ SYSCALL	freemem(struct  mblock  *block, unsigned size)
 	struct	mblock	*p, *q;
 	unsigned top;
 
-	if (size==0 || (unsigned)block>(unsigned)maxaddr
-		    || ((unsigned)block)<((unsigned)&end))
+    if (size==0 || (unsigned)block>(unsigned)maxaddr)
+            //|| ((unsigned)block)<((unsigned)&end))
 		return(SYSERR);
 	size = (unsigned)roundew(size);
 	disable(ps);
