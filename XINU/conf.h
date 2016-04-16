@@ -62,7 +62,7 @@ extern	int	ttywrite();
 extern	int	ioerr();
 extern	int	ttycntl();
 extern	int	ttygetc();
-extern	int 	ttyputc();
+extern	int 	ttyputc(struct devsw *devptr, char ch);
 extern	void	ttyiin();
 extern	void	ttyoin();
 
