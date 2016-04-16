@@ -15,7 +15,7 @@ LOCAL eputc();
  *  ttyiin  --  lower-half tty device driver for input interrupts
  *------------------------------------------------------------------------
  */
-INTPROC	ttyiin(register struct tty *iptr)   /* pointer to tty block     */
+void	ttyiin(register struct tty *iptr)   /* pointer to tty block     */
 {
 	register struct	csr *cptr;
 	register int	ch;
