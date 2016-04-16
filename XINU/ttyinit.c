@@ -20,9 +20,9 @@ int ttyinit(struct devsw *devptr)
 	/* set up interrupt vector and interrupt dispatch table */
 
 	iptr = &tty[devptr->dvminor];
-	iosetvec(devptr->dvnum, (int)iptr, (int)iptr);
+    iosetvec(devptr->dvnum, (void *)iptr, (void *)iptr);
 
-	devptr->dvioblk = (char *)iptr;		/* fill tty control blk	*/
+    devptr->dvioblk = (void *)iptr;		/* fill tty control blk	*/
 	isconsole = (devptr->dvnum == CONSOLE);	/* make console cooked	*/
 	iptr->ioaddr = (struct csr *)devptr->dvcsr;/* copy in csr addr.	*/
 	iptr->ihead = iptr->itail = 0;		/* empty input queue	*/
