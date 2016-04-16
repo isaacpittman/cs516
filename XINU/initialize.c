@@ -7,7 +7,7 @@
 #include "sem.h"
 #include "sleep.h"
 #include "mem.h"
-//#include <tty.h>
+#include <tty.h>
 #include "q.h"
 #include "io.h"
 //#include <disk.h>
@@ -33,7 +33,7 @@ struct	intmap	intmap[NDEVS];	/* interrupt dispatch table		*/
 #endif
 struct	mblock	memlist;        /* list of free memory blocks		*/
 #ifdef	Ntty
-//struct  tty     tty[Ntty];	/* SLU buffers and mode control		*/
+struct  tty     tty[Ntty];	/* SLU buffers and mode control		*/
 #endif
 
 sigset_t    full_block, full_unblock;       /* Masks to block or unblock interrupts during critical sections */
