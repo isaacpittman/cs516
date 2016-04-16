@@ -18,8 +18,10 @@
 #define	NULLCH		'\0'		/* The null character		*/
 #define	NULLSTR		""		/* Pointer to empty string	*/
 #define	SYSCALL		int		/* System call declaration	*/
+#define	VSYSCALL	void		/* System call declaration	*/
 #define	LOCAL		static		/* Local procedure declaration	*/
 #define	INTPROC		int		/* Interrupt procedure  "	*/
+#define	VINTPROC	void		/* Interrupt procedure  "	*/
 #define	ISR		void		/* interrupt signal handler	*/
 #define	PROCESS		int		/* Process declaration		*/
 #define	RESCHYES	1		/* tell	ready to reschedule	*/
@@ -75,9 +77,11 @@
 #define	disable(ps)	sigprocmask(SIG_SETMASK, &full_block, &ps);
 #define	restore(ps)	sigprocmask(SIG_SETMASK, &ps, NULL);
 #define	enable()	sigprocmask(SIG_SETMASK, &full_unblock, NULL);
-#define	pause()		pause();
+// #define	pause()		pause();
 
 extern	int	rdyhead, rdytail;
 extern	int	preempt;
+extern  int     sem_write;
+extern  int     bcnt;
 extern  sigset_t full_block, full_unblock;
 extern  ucontext_t posix_ctxt_init, end_game_ctxt;
