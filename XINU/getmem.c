@@ -8,7 +8,7 @@
  * getmem  --  allocate heap storage, returning lowest integer address
  *------------------------------------------------------------------------
  */
-SYSCALL	*getmem(unsigned nbytes)
+void	*getmem(unsigned nbytes)
 {
     sigset_t	ps;
 	struct	mblock	*p, *q, *leftover;
