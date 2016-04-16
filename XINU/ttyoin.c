@@ -10,7 +10,7 @@
  *  ttyoin  --  lower-half tty device driver for output interrupts
  *------------------------------------------------------------------------
  */
-INTPROC	ttyoin(register struct tty *iptr)
+void	ttyoin(register struct tty *iptr)
 {
 	register struct	csr	*cptr;
 	int	ct;
