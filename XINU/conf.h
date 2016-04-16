@@ -1,6 +1,6 @@
 /* conf.h (GENERATED FILE; DO NOT EDIT) */
 
-#define	NULLPTR	(char *)0
+#define	NULLPTR	(void *)0
 
 /* Device table declarations */
 struct	devsw	{			/* device table entry */
@@ -62,9 +62,9 @@ extern	int	ttywrite();
 extern	int	ioerr();
 extern	int	ttycntl();
 extern	int	ttygetc();
-extern	int 	ttyputc(struct devsw *, char);
-extern	int	ttyiin();
-extern	int	ttyoin();
+extern	int 	ttyputc();
+extern	void	ttyiin();
+extern	void	ttyoin();
 
 /*************************************************
 extern	int	dlcinit();
