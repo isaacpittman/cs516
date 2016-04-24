@@ -3,19 +3,19 @@
 #include "kernel.h"
 
 #define IOCHERR		0200		/* bit set on when an error     */
-#define	OBMINSP		20		/* min space in buffer before	*/
+#define	OBMINSP		512		/* min space in buffer before	*/
 					/* processes awakened to write	*/
-#define	EBUFLEN		20		/* size of echo queue		*/
+#define	EBUFLEN		1024		/* size of echo queue		*/
 
 /* size constants */
 #ifndef	Ntty
 #define	Ntty		1		/* number of serial tty lines	*/
 #endif
 #ifndef	IBUFLEN
-#define	IBUFLEN		128		/* num.	chars in input queue	*/
+#define	IBUFLEN		1024		/* num.	chars in input queue	*/
 #endif
 #ifndef	OBUFLEN
-#define	OBUFLEN		64		/* num.	chars in output	queue	*/
+#define	OBUFLEN		1024		/* num.	chars in output	queue	*/
 #endif
 
 /* mode constants */
