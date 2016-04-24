@@ -1,10 +1,10 @@
 /* ttywrite.c - ttywrite, writcopy */
 
-#include <conf.h>
-#include <kernel.h>
-#include <tty.h>
-#include <io.h>
-#include <slu.h>
+#include "conf.h"
+#include "kernel.h"
+#include "tty.h"
+#include "io.h"
+#include "slu.h"
 
 LOCAL writcopy();
 
@@ -14,11 +14,11 @@ LOCAL writcopy();
  */
 int ttywrite(struct devsw *devptr, char *buff, int count)
 {
-	register struct tty *ttyp;
+    struct tty *ttyp;
 	int avail;
     sigset_t ps;
 
-	if (count < 0)
+    if (count < 0)
 		return(SYSERR);
 	if (count == 0)
 		return(OK);
@@ -32,6 +32,7 @@ int ttywrite(struct devsw *devptr, char *buff, int count)
                         writcopy(buff, ttyp, avail);
                         buff  += avail;
                         count -= avail;
+                        (ttyp->ioaddr)->ctstat = SLUENABLE;
                 }
                 for ( ; count>0 ; count--)
                         ttyputc(devptr, *buff++);
@@ -45,9 +46,9 @@ int ttywrite(struct devsw *devptr, char *buff, int count)
  *  writcopy - high-speed copy from user's buffer into system buffer
  *------------------------------------------------------------------------
  */
-LOCAL writcopy(register char *buff, struct tty *ttyp, int count)
+LOCAL writcopy(char *buff, struct tty *ttyp, int count)
 {
-	register char	*qhead, *qend, *uend;
+    char	*qhead, *qend, *uend;
 
          qhead = &ttyp->obuff[ttyp->ohead];
          qend = &ttyp->obuff[OBUFLEN];
