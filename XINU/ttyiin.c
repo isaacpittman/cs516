@@ -1,10 +1,10 @@
 /* ttyiin.c ttyiin, erase1, eputc, echoch */
 
-#include <conf.h>
-#include <kernel.h>
-#include <tty.h>
-#include <io.h>
-#include <slu.h>
+#include "conf.h"
+#include "kernel.h"
+#include "tty.h"
+#include "io.h"
+#include "slu.h"
 
 
 LOCAL erase1();
@@ -15,10 +15,10 @@ LOCAL eputc();
  *  ttyiin  --  lower-half tty device driver for input interrupts
  *------------------------------------------------------------------------
  */
-void	ttyiin(register struct tty *iptr)   /* pointer to tty block     */
+void	ttyiin(struct tty *iptr)   /* pointer to tty block     */
 {
-	register struct	csr *cptr;
-	register int	ch;
+    struct	csr *cptr;
+    int	ch;
 	int	ct;
 	char    cerr;
 
@@ -26,17 +26,23 @@ void	ttyiin(register struct tty *iptr)   /* pointer to tty block     */
 	if (iptr->imode == IMRAW) {
 		if (scount(iptr->isem) >= IBUFLEN) {
 			ch = cptr->crbuf;
+            cptr->crstat = cptr->crstat & SLUREADYOFF; // We have to "clear the interrupt bit", because we don't have hardware to flip it automatically.
 			return;			/* discard if no space	*/
 		}
-		if ( (ch=cptr->crbuf) & SLUERMASK) /* character error   */
+        if ( (ch=cptr->crbuf) & SLUERMASK){ /* character error   */
+            cptr->crstat = cptr->crstat & SLUREADYOFF; // We have to "clear the interrupt bit", because we don't have hardware to flip it automatically.
 			iptr->ibuff[iptr->ihead++] = (ch & SLUCHMASK) | IOCHERR;
-		else				/* normal read complete */
+        }else{				/* normal read complete */
+            cptr->crstat = cptr->crstat & SLUREADYOFF; // We have to "clear the interrupt bit", because we don't have hardware to flip it automatically.
 			iptr->ibuff[iptr->ihead++] = (ch & SLUCHMASK);
-		if (iptr->ihead	>= IBUFLEN)	/* wrap buffer pointer	*/
+        }
+        if (iptr->ihead	>= IBUFLEN){	/* wrap buffer pointer	*/
 			iptr->ihead = 0;
-	        signal(iptr->isem);
+        }
+        signal(iptr->isem);
 	} else {				/* cbreak | cooked mode	*/
-		cerr = ((ch=cptr->crbuf) & SLUERMASK) ? IOCHERR : 0;
+        cerr = ((ch=cptr->crbuf) & SLUERMASK) ? IOCHERR : 0;
+        cptr->crstat = cptr->crstat & SLUREADYOFF; // We have to "clear the interrupt bit", because we don't have hardware to flip it automatically.
 		ch &= SLUCHMASK;
 		if ( ch	== RETURN && iptr->icrlf )
 			ch = NEWLINE;
