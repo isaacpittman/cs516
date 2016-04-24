@@ -8,10 +8,10 @@
 %{
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <fcntl.h>
 #include <errno.h>
-#include <stdio.h>
+#include "stdio.h"
 #include "cli.h" /* Contains the TKN_ token definitions */
+#include "conf.h"
 
 /* The value of a returned token. For example, the procnum when resuming */
 extern int yylval;
@@ -19,14 +19,11 @@ extern int yylval;
 /* The function that displays the prompt */
 void prompt();
 
-/* Force the lexer to use getc() to get 1 character at a time */
-/* Set stdin to non-blocking mode, and keep trying to get characters until EOF */
 #define YY_INPUT(buf,result,max_size) \
    { \
-     fcntl (0, F_SETFL, O_NONBLOCK); \
-     int c = getc(stdin); \
-     while (c==-1 && errno==EAGAIN) c=getc(stdin); \
-     result = (c == EOF) ? YY_NULL : (buf[0] = c, 1); \
+     int numRead = read(CONSOLE, buf, 500); \
+     while(numRead==0) {numRead = read(CONSOLE, buf, 500);} \
+     result = numRead; \
    }
 
 /* The token that will be returned by the lexer */
@@ -67,8 +64,8 @@ procnum [0-9]
      return currentToken;
 }
 <getprocnum>.* { 
-            write(1, yytext, yyleng);
-            write(1, " is not valid procnum.\n",23);
+            write(0, yytext, yyleng);
+            write(0, " is not valid procnum.\n",23);
             BEGIN(INITIAL);
           } 
 
@@ -114,7 +111,7 @@ procnum [0-9]
 
    /* The .* accumulates all the characters on any line that does not
       match a valid XINU command */
-.* { printf("error: %s \n", yytext); }
+.* { write(0,"error: ",7); write(0,yytext,strlen(yytext)); write(0,"\n",1); }
 
    /* Print a prompt after every newline */
 \n { prompt(); }
@@ -126,5 +123,5 @@ procnum [0-9]
  * * * * * * * * * * *
  */
 void prompt() {
-    write(1, "prompt>", 7);
+    write(0, "prompt>", 7);
 }
