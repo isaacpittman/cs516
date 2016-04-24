@@ -1,9 +1,9 @@
 #include<ucontext.h>
-
+#include "conf.h"
 void ctxsw(ucontext_t* uctx_old, ucontext_t* uctx_new)
 {
     if (swapcontext(uctx_old, uctx_new) == -1){
-           write(1,"\nSwap context error in ctxsw\n",29);
+           write(CONSOLE,"\nSwap context error in ctxsw\n",29);
            exit(1);
     }
 }

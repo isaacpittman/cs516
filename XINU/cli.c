@@ -90,16 +90,16 @@ void start_cli() {
         }
     }
 
-    write(1, exit_msg, sizeof(exit_msg)-1);
+    write(CONSOLE, exit_msg, sizeof(exit_msg)-1);
 }
 
 void create_rdy(){
     char create_rdy_msg[]    = "\tIN CREATE WITH RDY\n";
-    write(1, create_rdy_msg, sizeof(create_rdy_msg)-1);
+    write(CONSOLE, create_rdy_msg, sizeof(create_rdy_msg)-1);
 
     int rdy_func_pid;
     if((rdy_func_pid = create(rdy_func, MINSTK, 20, "RDY", 1, 0)) == SYSERR){
-        write(1, "\ncreate rdy_func failed\n", 24);
+        write(CONSOLE, "\ncreate rdy_func failed\n", 24);
     }
 }
 
@@ -108,20 +108,20 @@ void rdy_func(){
     char rdy_will_spin_msg[] = "\nRDY will spin forever\n";
 
     rdy_proc_alive_msg[31] = (getpid() + 48);
-    write(1, rdy_proc_alive_msg, sizeof(rdy_proc_alive_msg)-1);
+    write(CONSOLE, rdy_proc_alive_msg, sizeof(rdy_proc_alive_msg)-1);
 
-    write(1, rdy_will_spin_msg, sizeof(rdy_will_spin_msg)-1);
+    write(CONSOLE, rdy_will_spin_msg, sizeof(rdy_will_spin_msg)-1);
 
     while (1);
 }
 
 void create_sig(){
     char create_sig_msg[]    = "\tIN CREATE WITH SIG\n";
-    write(1, create_sig_msg, sizeof(create_sig_msg)-1);
+    write(CONSOLE, create_sig_msg, sizeof(create_sig_msg)-1);
 
     int sig_func_pid;
     if((sig_func_pid = create(sig_func, MINSTK, 20, "SIG", 1, 0)) == SYSERR){
-        write(1, "\ncreate sig_func failed\n", 24);
+        write(CONSOLE, "\ncreate sig_func failed\n", 24);
     }
 }
 
@@ -130,28 +130,28 @@ void sig_func(){
     char sig_sent_signal_msg[] = "\nSIG sent signal\n";
 
     sig_proc_alive_msg[31] = (getpid() + 48);
-    write(1, sig_proc_alive_msg, sizeof(sig_proc_alive_msg)-1);
+    write(CONSOLE, sig_proc_alive_msg, sizeof(sig_proc_alive_msg)-1);
 
     if (sem==-1){
         if((sem = screate(0)) == SYSERR){
-            write(1, "\nsem create failed\n", 19);
+            write(CONSOLE, "\nsem create failed\n", 19);
         }
     }
 
     if(signal(sem) == SYSERR){
-        write(1, "\nin sig_func signal failed\n", 27);
+        write(CONSOLE, "\nin sig_func signal failed\n", 27);
     }
 
-    write(1, sig_sent_signal_msg, sizeof(sig_sent_signal_msg)-1);
+    write(CONSOLE, sig_sent_signal_msg, sizeof(sig_sent_signal_msg)-1);
 }
 
 void create_snd(){
     char create_snd_msg[]    = "\tIN CREATE WITH SND\n";
-    write(1, create_snd_msg, sizeof(create_snd_msg)-1);
+    write(CONSOLE, create_snd_msg, sizeof(create_snd_msg)-1);
 
     int snd_func_pid;
     if((snd_func_pid = create(snd_func, MINSTK, 20, "SND", 1, 0)) == SYSERR){
-        write(1, "\ncreate snd_func failed\n", 24);
+        write(CONSOLE, "\ncreate snd_func failed\n", 24);
     }
 }
 
@@ -160,22 +160,22 @@ void snd_func(){
     char snd_sent_message_msg[] = "\nSND sent message\n";
 
     snd_proc_alive_msg[31] = (getpid() + 48);
-    write(1, snd_proc_alive_msg, sizeof(snd_proc_alive_msg)-1);
+    write(CONSOLE, snd_proc_alive_msg, sizeof(snd_proc_alive_msg)-1);
 
     if(send(rcv_func_pid, 999) == SYSERR){
-        write(1, "\nin snd_func send failed\n", 25);
+        write(CONSOLE, "\nin snd_func send failed\n", 25);
     }
 
-    write(1, snd_sent_message_msg, sizeof(snd_sent_message_msg)-1);
+    write(CONSOLE, snd_sent_message_msg, sizeof(snd_sent_message_msg)-1);
 }
 
 void create_wtr(){
     char create_wtr_msg[]    = "\tIN CREATE WITH WTR\n";
-    write(1, create_wtr_msg, sizeof(create_wtr_msg)-1);
+    write(CONSOLE, create_wtr_msg, sizeof(create_wtr_msg)-1);
 
     int wtr_func_pid;
     if((wtr_func_pid = create(wtr_func, MINSTK, 20, "WTR", 1, 0)) == SYSERR){
-        write(1, "\ncreate wtr_func failed\n", 24);
+        write(CONSOLE, "\ncreate wtr_func failed\n", 24);
     }
 }
 
@@ -184,27 +184,27 @@ void wtr_func(){
     char wtr_got_signal_msg[] = "\nWTR received signal\n";
 
     wtr_proc_alive_msg[31] = (getpid() + 48);
-    write(1, wtr_proc_alive_msg, sizeof(wtr_proc_alive_msg)-1);
+    write(CONSOLE, wtr_proc_alive_msg, sizeof(wtr_proc_alive_msg)-1);
 
     if (sem==-1){
         if((sem = screate(0)) == SYSERR){
-            write(1, "\nsem create failed\n", 19);
+            write(CONSOLE, "\nsem create failed\n", 19);
         }
     }
 
     if(wait(sem) == SYSERR){
-        write(1, "\nin wtr_func wait failed\n", 25);
+        write(CONSOLE, "\nin wtr_func wait failed\n", 25);
     }
 
-    write(1, wtr_got_signal_msg, sizeof(wtr_got_signal_msg)-1);
+    write(CONSOLE, wtr_got_signal_msg, sizeof(wtr_got_signal_msg)-1);
 }
 
 void create_rcv(){
     char create_rcv_msg[]    = "\tIN CREATE WITH RCV\n";
-    write(1, create_rcv_msg, sizeof(create_rcv_msg)-1);
+    write(CONSOLE, create_rcv_msg, sizeof(create_rcv_msg)-1);
 
     if((rcv_func_pid = create(rcv_func, MINSTK, 20, "RCV", 1, 0)) == SYSERR){
-        write(1, "\ncreate rcv_func failed\n", 24);
+        write(CONSOLE, "\ncreate rcv_func failed\n", 24);
     }
 }
 
@@ -213,43 +213,43 @@ void rcv_func(){
     char rcv_got_message_msg[] = "\nRCV received message\n";
 
     rcv_proc_alive_msg[31] = (getpid() + 48);
-    write(1, rcv_proc_alive_msg, sizeof(rcv_proc_alive_msg)-1);
+    write(CONSOLE, rcv_proc_alive_msg, sizeof(rcv_proc_alive_msg)-1);
 
     if(receive() == SYSERR){
-        write(1, "\nin rcv_func receive failed\n", 28);
+        write(CONSOLE, "\nin rcv_func receive failed\n", 28);
     }
 
-    write(1, rcv_got_message_msg, sizeof(rcv_got_message_msg)-1);
+    write(CONSOLE, rcv_got_message_msg, sizeof(rcv_got_message_msg)-1);
 }
 
 void do_resume(int pid){
     char resume_msg[]        = "\tIN RESUME WITH pid X\n";
     resume_msg[20] = (char)(value + 48);
-    write(1, resume_msg, sizeof(resume_msg)-1);
+    write(CONSOLE, resume_msg, sizeof(resume_msg)-1);
     resume(pid);
 }
 
 void do_kill(int pid){
     char kill_msg[]          = "\tIN KILL WITH pid X\n";
     kill_msg[18] = (char)(pid + 48);
-    write(1, kill_msg, sizeof(kill_msg)-1);
+    write(CONSOLE, kill_msg, sizeof(kill_msg)-1);
     kill(pid);
 }
 
 void do_suspend(int pid){
     char suspend_msg[]          = "\tIN SUSP WITH pid X\n";
     suspend_msg[18] = (char)(pid + 48);
-    write(1, suspend_msg, sizeof(suspend_msg)-1);
+    write(CONSOLE, suspend_msg, sizeof(suspend_msg)-1);
     suspend(pid);
 }
 
 void create_slp(){
     char create_slp_msg[]    = "\tIN CREATE WITH SLP\n";
-    write(1, create_slp_msg, sizeof(create_slp_msg)-1);
+    write(CONSOLE, create_slp_msg, sizeof(create_slp_msg)-1);
 
     int slp_func_pid;
     if((slp_func_pid = create(slp_func, MINSTK, 20, "SLP", 0)) == SYSERR){
-        write(1, "\ncreate slp_func failed\n", 24);
+        write(CONSOLE, "\ncreate slp_func failed\n", 24);
     }
 }
 
@@ -258,9 +258,9 @@ void slp_func(){
     char slp_will_sleep_msg[] = "\nSLP will now sleep for 120 seconds\n";
 
     slp_proc_alive_msg[31] = (getpid() + 48);
-    write(1, slp_proc_alive_msg, sizeof(slp_proc_alive_msg)-1);
+    write(CONSOLE, slp_proc_alive_msg, sizeof(slp_proc_alive_msg)-1);
 
-    write(1, slp_will_sleep_msg, sizeof(slp_will_sleep_msg)-1);
+    write(CONSOLE, slp_will_sleep_msg, sizeof(slp_will_sleep_msg)-1);
 
     sleep(120);
 
@@ -279,7 +279,7 @@ void show_proc(){
     char semwaiting_msg[]       = "SEMWAITING\n";
     char suspended_msg[]        = "SUSPENDED\n";
 
-    write(1, show_proc_msg, sizeof(show_proc_msg)-1);
+    write(CONSOLE, show_proc_msg, sizeof(show_proc_msg)-1);
 
     int i;
     /* Disable interrupts to show consistent view of processes states */
@@ -287,28 +287,28 @@ void show_proc(){
 
     for (i=0;i<NPROC;++i){
         proc_n_state_msg[6] = (char)(i+48); // insert the correct proc number into the message
-        write(1,proc_n_state_msg,sizeof(proc_n_state_msg)-1);
+        write(CONSOLE,proc_n_state_msg,sizeof(proc_n_state_msg)-1);
         switch(proctab[i].pstate){
         case PRCURR:
-            write(1,current_msg, sizeof(current_msg)-1);
+            write(CONSOLE,current_msg, sizeof(current_msg)-1);
             break;
         case PRFREE:
-            write(1,free_msg, sizeof(free_msg)-1);
+            write(CONSOLE,free_msg, sizeof(free_msg)-1);
             break;
         case PRREADY:
-            write(1,ready_msg, sizeof(ready_msg)-1);
+            write(CONSOLE,ready_msg, sizeof(ready_msg)-1);
             break;
         case PRRECV:
-            write(1,recvwaiting_msg, sizeof(recvwaiting_msg)-1);
+            write(CONSOLE,recvwaiting_msg, sizeof(recvwaiting_msg)-1);
             break;
         case PRSLEEP:
-            write(1,sleeping_msg, sizeof(sleeping_msg)-1);
+            write(CONSOLE,sleeping_msg, sizeof(sleeping_msg)-1);
             break;
         case PRSUSP:
-            write(1,suspended_msg, sizeof(suspended_msg)-1);
+            write(CONSOLE,suspended_msg, sizeof(suspended_msg)-1);
             break;
         case PRWAIT:
-            write(1,semwaiting_msg, sizeof(semwaiting_msg)-1);
+            write(CONSOLE,semwaiting_msg, sizeof(semwaiting_msg)-1);
             break;
         }
     }
@@ -323,7 +323,7 @@ void show_slp(){
     char show_slp_msg[]             = "\tIN SHOW SLP\n";
     char proc_n_wait_ticks_msg[]    = "\nPROC N WAIT TICKS           \n";
 
-    write(1, show_slp_msg, sizeof(show_slp_msg)-1);
+    write(CONSOLE, show_slp_msg, sizeof(show_slp_msg)-1);
 
     /* Disable interrupts to give a consistent view of the sleep queue */
     disable(ps);
@@ -332,7 +332,7 @@ void show_slp(){
     while ((next=q[next].qnext) < NPROC){
         proc_n_wait_ticks_msg[6] = (char)(next+48); //convert the pid to ascii and insert into message
         itoa(q[next].qkey, &proc_n_wait_ticks_msg[19]); // convert the ticks to ascii and insert into message
-        write(1, proc_n_wait_ticks_msg, sizeof(proc_n_wait_ticks_msg)-1);
+        write(CONSOLE, proc_n_wait_ticks_msg, sizeof(proc_n_wait_ticks_msg)-1);
     }
 
     restore(ps);
@@ -346,7 +346,7 @@ void show_rdy(){
     char show_rdy_msg[]             = "\tIN SHOW RDY\n";
     char proc_n_priority_msg[]    = "\nPROC N PRIORITY   \n";
 
-    write(1, show_rdy_msg, sizeof(show_rdy_msg)-1);
+    write(CONSOLE, show_rdy_msg, sizeof(show_rdy_msg)-1);
 
     /* Disable interrupts to give a consistent view of the ready queue */
     disable(ps);
@@ -355,7 +355,7 @@ void show_rdy(){
     while ((next=q[next].qnext) < NPROC){
         proc_n_priority_msg[6] = (char)(next+48); //convert the pid to ascii and insert into message
         itoa(q[next].qkey, &proc_n_priority_msg[17]); // convert the ticks to ascii and insert into message
-        write(1, proc_n_priority_msg, sizeof(proc_n_priority_msg)-1);
+        write(CONSOLE, proc_n_priority_msg, sizeof(proc_n_priority_msg)-1);
     }
 
     restore(ps);
