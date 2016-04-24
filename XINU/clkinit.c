@@ -63,7 +63,6 @@ clkinit()
     timer.it_interval.tv_sec = 0;
     timer.it_interval.tv_usec = TICK_LENGTH_USEC;
 
-    write(1, "\nStarting clock interrupt timer\n", 32);
     setitimer (ITIMER_VIRTUAL, &timer, NULL);
 }
 
