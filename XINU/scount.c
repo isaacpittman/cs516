@@ -1,8 +1,8 @@
 /* scount.c - scount */
 
-#include <conf.h>
-#include <kernel.h>
-#include <sem.h>
+#include "conf.h"
+#include "kernel.h"
+#include "sem.h"
 
 /*------------------------------------------------------------------------
  *  scount  --  return a semaphore count

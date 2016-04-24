@@ -1,9 +1,9 @@
 /* ttyread.c - ttyread, readcopy */
 
-#include <conf.h>
-#include <kernel.h>
-#include <tty.h>
-#include <io.h>
+#include "conf.h"
+#include "kernel.h"
+#include "tty.h"
+#include "io.h"
 
 LOCAL readcopy();
 
@@ -14,7 +14,7 @@ LOCAL readcopy();
 int ttyread(struct devsw *devptr, char *buff, int count)
 {
     sigset_t ps;
-	register struct	tty *iptr;
+    struct	tty *iptr;
 	int avail, nread;
 
 	if (count < 0)
@@ -47,9 +47,9 @@ int ttyread(struct devsw *devptr, char *buff, int count)
  *  readcopy - high speed copy procedure used by ttyread
  *------------------------------------------------------------------------
  */
-LOCAL readcopy(register char *buff, struct tty *iptr, int count)
+LOCAL readcopy(char *buff, struct tty *iptr, int count)
 {
-         register char *qtail, *qend, *uend;    /* copy loop variables */
+         char *qtail, *qend, *uend;    /* copy loop variables */
 
          qtail = &iptr->ibuff[iptr->itail];
          qend = &iptr->ibuff[IBUFLEN];

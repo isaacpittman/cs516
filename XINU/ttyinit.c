@@ -1,11 +1,11 @@
 /* ttyinit.c - ttyinit */
 
-#include <conf.h>
-#include <kernel.h>
-#include <proc.h>
-#include <tty.h>
-#include <io.h>
-#include <slu.h>
+#include "conf.h"
+#include "kernel.h"
+#include "proc.h"
+#include "tty.h"
+#include "io.h"
+#include "slu.h"
 
 /*------------------------------------------------------------------------
  *  ttyinit - initialize buffers and modes for a tty line
@@ -13,8 +13,8 @@
  */
 int ttyinit(struct devsw *devptr)
 {
-	register struct	tty *iptr;
-	register struct	csr *cptr;
+    struct	tty *iptr;
+    struct	csr *cptr;
 	int	 junk, isconsole;
 
 	/* set up interrupt vector and interrupt dispatch table */
@@ -27,7 +27,7 @@ int ttyinit(struct devsw *devptr)
 	iptr->ioaddr = (struct csr *)devptr->dvcsr;/* copy in csr addr.	*/
 	iptr->ihead = iptr->itail = 0;		/* empty input queue	*/
 	iptr->isem = screate(0);		/* chars. read so far=0	*/
-	iptr->osem = screate(OBUFLEN);		/* buffer available=all	*/
+    iptr->osem = screate(OBUFLEN);		/* buffer available=all	*/
 	iptr->odsend = 0;			/* sends delayed so far	*/
 	iptr->ohead = iptr->otail = 0;		/* output queue empty	*/
 	iptr->ehead = iptr->etail = 0;		/* echo queue empty	*/

@@ -5,7 +5,7 @@
 // Linux platform includes for signal and context management
 
 #include "signal.h"
-#include <stdio.h>
+#include "stdio.h"
 #include <sys/time.h>
 #include <stdlib.h>
 #include <ucontext.h>

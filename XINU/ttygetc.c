@@ -1,9 +1,9 @@
 /* ttygetc.c - ttygetc */
 
-#include <conf.h>
-#include <kernel.h>
-#include <tty.h>
-#include <io.h>
+#include "conf.h"
+#include "kernel.h"
+#include "tty.h"
+#include "io.h"
 
 /*------------------------------------------------------------------------
  *  ttygetc - read one character from a tty device
