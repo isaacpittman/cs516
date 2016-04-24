@@ -12,7 +12,7 @@
  */
 int ttycntl(struct devsw *devptr, int func, char *addr)
 {
-	register struct	tty *ttyp;
+    struct	tty *ttyp;
 	char	ch;
     sigset_t	ps;
 
