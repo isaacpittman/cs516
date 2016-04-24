@@ -1,3 +1,8 @@
 in conf.c, replaced interrupt vectors with signals SIGUSR1/2
 in iosetvec, configure to use a signal handler to call our dispatch routine, instead of using the device vectors
-
+in ioint, instead of using PSW to find correct entry in intmap, we use hardcode console
+in ttyiin/ttyoin, had to manually enable/disable the "interrupt" bit, since we don't have hardware to do it manually
+in initialize.c, need to get some shared memory to simulate the control status register for our tty device
+in initialize.c, had to remove the write call from the idle thread, because it could potentially block while waiting for a semaphore, and if it does then there's nothing on the ready queue, so XINU crashes when it tries to resched.
+in tty.h, had to increase buffer size so that output wasn't jumbled between processes
+in writcopy: added sluenable??
