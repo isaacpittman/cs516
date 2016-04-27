@@ -21,11 +21,12 @@ void prompt();
 
 #define YY_INPUT(buf,result,max_size) \
    { \
-     int numRead = read(CONSOLE, buf, 500); \
-     while(numRead==0) {numRead = read(CONSOLE, buf, 500);} \
-     result = numRead; \
+     int n,x; \
+     while ((n=read(CONSOLE, buf, 0))==0){ \
+        for(x=0; x<100000000; ++x); \
+     } \
+     result=n; \
    }
-
 /* The token that will be returned by the lexer */
 int currentToken;
 %}
