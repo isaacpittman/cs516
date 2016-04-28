@@ -1,8 +1,8 @@
 /* ioinit.c - ioinit, iosetvec */
 
-#include <conf.h>
-#include <kernel.h>
-#include <io.h>
+#include "conf.h"
+#include "kernel.h"
+#include "io.h"
 
 /*------------------------------------------------------------------------
  *  ioinit --  standard interrupt vector and dispatch initialization
@@ -49,6 +49,12 @@ int iosetvec(int descrp, void *incode, void *outcode)
     */
     /* Use signal handlers instead of vectors, since we don't have hardware vectors in Linux */
     sigfillset(&int_mask);
+    /* If SIGFPE, SIGILL, SIGSEGV or SIGBUS is raised while blocked, results are undefined. Do not block these. */
+    sigdelset(&int_mask, SIGFPE);
+    sigdelset(&int_mask, SIGILL);
+    sigdelset(&int_mask, SIGSEGV);
+    sigdelset(&int_mask, SIGBUS);
+
     sig_dispatch.sa_handler = ioint;
     sig_dispatch.sa_mask    = int_mask;
     sig_dispatch.sa_flags   = SA_RESTART;
