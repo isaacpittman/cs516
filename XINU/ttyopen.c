@@ -1,7 +1,7 @@
 /* ttyopen.c - ttyopen */
 
-#include <conf.h>
-#include <kernel.h>
+#include "conf.h"
+#include "kernel.h"
 
 /*------------------------------------------------------------------------
  *  ttyopen - open tty device and return descriptor (for namespace)

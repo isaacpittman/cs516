@@ -1,8 +1,8 @@
 /* putc.c - putc */
 
-#include <conf.h>
-#include <kernel.h>
-#include <io.h>
+#include "conf.h"
+#include "kernel.h"
+#include "io.h"
 
 /*------------------------------------------------------------------------
  *  putc  -  write a single character to a device

@@ -1,10 +1,10 @@
 /* sreset.c - sreset */
 
-#include <conf.h>
-#include <kernel.h>
-#include <proc.h>
-#include <q.h>
-#include <sem.h>
+#include "conf.h"
+#include "kernel.h"
+#include "proc.h"
+#include "q.h"
+#include "sem.h"
 
 /*------------------------------------------------------------------------
  *  sreset  --  reset the count and queue of a semaphore

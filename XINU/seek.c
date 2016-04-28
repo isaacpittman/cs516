@@ -1,8 +1,8 @@
 /* seek.c seek */
 
-#include <conf.h>
-#include <kernel.h>
-#include <io.h>
+#include "conf.h"
+#include "kernel.h"
+#include "io.h"
 
 /*------------------------------------------------------------------------
  *  seek  --  position a device (very common special case of control)

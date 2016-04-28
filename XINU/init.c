@@ -1,8 +1,8 @@
 /* init.c - init */
 
-#include <conf.h>
-#include <kernel.h>
-#include <io.h>
+#include "conf.h"
+#include "kernel.h"
+#include "io.h"
 
 /*------------------------------------------------------------------------
  *  init  -  initialize a device

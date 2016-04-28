@@ -1,8 +1,8 @@
 /* open.c - open */
 
-#include <conf.h>
-#include <kernel.h>
-#include <io.h>
+#include "conf.h"
+#include "kernel.h"
+#include "io.h"
 
 /*------------------------------------------------------------------------
  *  open  -  open a connection to a device/file (parms 2 &3 are optional)

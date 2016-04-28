@@ -1,10 +1,10 @@
 /* ttycntl.c - ttycntl */
 
-#include <conf.h>
-#include <kernel.h>
-#include <tty.h>
-#include <io.h>
-#include <slu.h>
+#include "conf.h"
+#include "kernel.h"
+#include "tty.h"
+#include "io.h"
+#include "slu.h"
 
 /*------------------------------------------------------------------------
  *  ttycntl  -  control a tty device by setting modes

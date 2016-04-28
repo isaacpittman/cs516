@@ -1,8 +1,8 @@
 /* getc.c - getc */
 
-#include <conf.h>
-#include <kernel.h>
-#include <io.h>
+#include "conf.h"
+#include "kernel.h"
+#include "io.h"
 
 /*------------------------------------------------------------------------
  *  getc  -  get one character from a device
