@@ -7,7 +7,7 @@
 #include "sem.h"
 #include "sleep.h"
 #include "mem.h"
-#include <tty.h>
+#include "tty.h"
 #include "q.h"
 #include "io.h"
 //#include <disk.h>
@@ -297,7 +297,8 @@ void main_fun(int arg){
     if((pidB = create(procB, MINSTK, 20, name, 2, sem1, pidA)) == SYSERR){
         write(CONSOLE, "\ncreate B failed\n", 17);
     }
-    if((pidC = create(procC, MINSTK, 20, name, 2, main_pid, 30)) == SYSERR){
+    /* Give procC extra space, because it starts the CLI */
+    if((pidC = create(procC, MINSTK * 10, 20, name, 2, main_pid, 30)) == SYSERR){
         write(CONSOLE, "\ncreate C failed\n", 17);
     }
 
@@ -326,6 +327,8 @@ void main_fun(int arg){
     }
 
     write(CONSOLE, "\nINIT: proc table empty, goodbye\n", 33);
+
+    term_mgr(-1);
 
 }
 
@@ -391,7 +394,7 @@ void procC(int arg1, int arg2){
     write(CONSOLE, "\nC: process C is alive\n", 22);
     write(CONSOLE, "\nC: process C is about to sleep for 30 seconds\n", 48);
 
-    if(sleep(30) == SYSERR){
+    if(sleep(arg2) == SYSERR){
         write(CONSOLE, "\nin C sleep failed\n", 19);
     }
 
