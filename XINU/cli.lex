@@ -1,4 +1,7 @@
 %option noyywrap
+%option noyyalloc
+%option noyyrealloc
+%option noyyfree
 %{
 /* * * * * * * * * * * *
  * * * DEFINITIONS * * *
@@ -9,6 +12,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <errno.h>
+#include "kernel.h"
 #include "stdio.h"
 #include "cli.h" /* Contains the TKN_ token definitions */
 #include "conf.h"
@@ -18,6 +22,19 @@ extern int yylval;
 
 /* The function that displays the prompt */
 void prompt();
+
+/* Functions to get and release memory using XINU functions */
+void * yyalloc (size_t size);
+void   yyfree (void * ptr);
+void * yyrealloc (void * ptr, size_t size);
+typedef struct{
+        int  state;
+        void *getmem_adr;
+        int  size;
+}MEMALLOC;
+MEMALLOC     memarray[500];
+int memarray_max = 0;
+
 
 #define YY_INPUT(buf,result,max_size) \
    { \
@@ -125,4 +142,60 @@ procnum [0-9]
  */
 void prompt() {
     write(0, "prompt>", 7);
+}
+
+/* Provide our own implementations. */
+void * yyalloc (size_t size){
+    int z;
+    for(z=0; z<500; ++z){
+        if(memarray[z].state)
+        {
+            continue;
+        }
+        else {
+               memarray[z].state = 1;
+               memarray[z].getmem_adr = getmem((int)size);
+               if((int)memarray[z].getmem_adr == SYSERR)return(NULL);
+               memarray[z].size = size;
+               if(memarray_max < (z + 1))memarray_max = z + 1;
+               return(memarray[z].getmem_adr);
+        }
+     }
+}
+
+void * yyrealloc (void * ptr, size_t size) {
+    int z;
+    for(z=0; z<memarray_max; ++z){
+        if(memarray[z].getmem_adr == ptr){
+          if(memarray[z].state)memarray[z].state = 0;
+          else continue;
+          if(freemem((struct mblock *)ptr, memarray[z].size) == SYSERR)return(NULL);
+          if(memarray_max == (z + 1))--z;
+          break;
+        }
+    }
+    for(z=0; z<500; ++z){
+     if(memarray[z].state)continue;
+     else { memarray[z].state = 1;
+            memarray[z].getmem_adr = getmem((int)size);
+            if((int)memarray[z].getmem_adr == SYSERR)return(NULL);
+            memarray[z].size = size;
+            if(memarray_max < (z + 1))memarray_max = z + 1;
+            return(memarray[z].getmem_adr);
+     }
+    }
+}
+
+void   yyfree (void * ptr){
+    int z;
+      for(z=0; z<500; ++z){
+            if(memarray[z].getmem_adr == ptr){
+                    if(memarray[z].state)memarray[z].state = 0;
+                    else continue;
+                    if(freemem((struct mblock *)ptr, memarray[z].size) == SYSERR)return;
+                    if(memarray_max == (z + 1))--z;
+                    return;
+            }
+      }
+    return;
 }
