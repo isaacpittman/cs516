@@ -1,8 +1,73 @@
-in conf.c, replaced interrupt vectors with signals SIGUSR1/2
-in iosetvec, configure to use a signal handler to call our dispatch routine, instead of using the device vectors
-in ioint, instead of using PSW to find correct entry in intmap, we use hardcode console
-in ttyiin/ttyoin, had to manually enable/disable the "interrupt" bit, since we don't have hardware to do it manually
-in initialize.c, need to get some shared memory to simulate the control status register for our tty device
-in initialize.c, had to remove the write call from the idle thread, because it could potentially block while waiting for a semaphore, and if it does then there's nothing on the ready queue, so XINU crashes when it tries to resched.
-in tty.h, had to increase buffer size so that output wasn't jumbled between processes
-in writcopy: added sluenable??
+Isaac Pittman
+isaac_pittman@student.uml.edu
+COMP 5160 Operating Systems II
+Spring 2016
+
+Assignment 4
+
+
+USAGE
+
+$ flex cli.lex
+$ make
+     [...output omitted...]
+$ make -f Makefile_ttem 
+     [...output omitted...]
+$ ./xinu.exe &
+[1] 14674
+$ ./ttem_drv 14674
+
+
+WRITEUP
+
+I believe I accomplished 100% of the requirements for this project, except for four outstanding bugs noted below. To accomplish the project, I used shared memory to mimic the CSR and communicate with the ttem_drv hardware emulator provided by professor. Specifically:
+* In initialize.c, I get some shared memory to simulate the control status register for our tty device, initialize it, and update devtap[CONSOLE] to point to it. Futher initialization is the same as in XINU book source, i.e. calling init(). One notable fix in initialize.c was that I had to remove the write call from the idle thread, because it could potentially block while waiting for a semaphore, and when it did, then there was nothing on the ready queue, so XINU crashed when it tried to resched.
+* In conf.c, I replaced interrupt vectors with signals SIGUSR1/2
+* In iosetvec, I configured signal handlers for SIGUSR1/2 to call our dispatch routine, ioint, instead of using the device vectors.
+* In ioint, instead of looking up the correct entry in intmap, I hardcoded the CONSOLE, since it is our only device. I use the signal number (SIGUSR1/2) to determine which lower half driver to call.
+* In ttyiin/ttyoin, I manually enabled/disabled the "interrupt" bit, which would normally be done by the PDP11 hardware. This bit is used by the hardware emulator to determine when it is ready to send/receive. A notable challenge here was determining whether to OR or AND the bit masks to ensure only the correct bit was flipped. Flipping the wrong bit caused output to stop or input to only accept one character.
+* In tty.h, I had to increase buffer size so that output was not jumbled between processes. This bug was described in a question on Exam 1. When the output semaphore was too small, output from multiple processes' write calls would be intermixed, but increasing the buffer sizes solved this problem.
+* In ttywritec, I added sluenable. As we discussed in class, this is a bug in the original XINU code. However, I did not have to make other modifications to writcopy to replace \r with \r\n, because the hardware emulator already makes that replacement.
+* In cli.lex, I replaced the memory management functions with custom versions that use getmem and freemem. I also replaced the input function with custom version that uses the XINU read call.
+* In all files, I replaced all write calls to stdin with write calls to XINU CONSOLE.
+
+
+KNOWN BUGS
+
+(Bug 1) XINU crashes when two processes end in quick succession.
+When two XINU processes end in quick succession, the stack becomes corrupted and XINU exits, because it cannot find the uc_link context. I was able to reproduce this from the XINU CLI by starting a waiter function and a signal function. When the signal function signals the waiter, both processes exit normally, but then XINU cannot successfully return to the command prompt process.
+Example:
+	prompt>create wtr
+
+	r	IN CREATE WITH WTR
+	prompt>prompt>esume 5
+
+		IN RESUME WITH pid 5
+
+	WTR process is alive with pid 5
+	prompt>prompt>create sig
+
+		IN CREATE WITH SIG
+	prompt>prompt>resume 4
+
+		IN RESUME WITH pid 4
+
+	SIG process is alive with pid 4
+	prompt>prompt>
+	WTR received signal
+
+	SIG sent signal
+	<><>signal xmit error: No such process
+
+
+	TTY EMULATOR DRIVER GOING DOWN ON SIGNAL -1 
+
+	[1]+  Done                    ./xinu.exe
+	[ipittman@mercury Assignment4]$ 
+The same issue happens when creating a sender and a receiver using "create rcv" followed by "create snd". However, the issue does not occur when the signaling function is started before the waiting function or when the sending function is started before the receiving function, because in those cases the processes end at different times, not in quick succession.
+
+(Bug 2) ttem_drv replaces \r with \n, so the CLI prompt appears twice, as "prompt>prompt>"
+
+(Bug 3) XINU cleans up its shared memory before the hardware emulator has finished outputting the final goodbye message, causing the message to appear truncated.
+
+(Bug 4) Backspace prints a gibberish character instead of deleting, even in cooked mode. 
